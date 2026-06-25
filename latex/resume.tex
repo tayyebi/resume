@@ -9,7 +9,6 @@
 % Content: Mohammad R. Tayyebi
 % Page numbers removed
 %------------------------
-
 \documentclass[9pt,a4paper]{article}
 
 % ENCODING & MICRO-TYPOS
@@ -21,7 +20,7 @@
 \usepackage[a4paper, left=0.3in, right=0.3in, top=0.4in, bottom=0.6in]{geometry}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0pt}
-\linespread{1.25} % base line spacing
+\linespread{1.18} % base line spacing
 
 % Preserve original unicode helpers (must exist in project)
 \input{glyphtounicode}
@@ -32,10 +31,10 @@
 \usepackage{charter}
 
 % MINIMAL PACKAGES
-\usepackage{graphicx}   % images
-\usepackage{xcolor}     % colors
-\usepackage{titlesec}   % section spacing
-\usepackage{enumitem}   % list control
+\usepackage{graphicx} % images
+\usepackage{xcolor} % colors
+\usepackage{titlesec} % section spacing
+\usepackage{enumitem} % list control
 \usepackage[hidelinks]{hyperref} % links
 \usepackage{fontawesome} % hyperlink icon
 
@@ -60,16 +59,14 @@
 \setlength{\footskip}{12pt}
 
 % CONFIGURABLE SPACING VARIABLES
-\newlength{\ListLeftMargin}   \setlength{\ListLeftMargin}{0.15in}
-\newlength{\ListTopSep}      \setlength{\ListTopSep}{0pt}
-\newlength{\ListItemSep}     \setlength{\ListItemSep}{3pt}
-\newlength{\ListParsep}      \setlength{\ListParsep}{0pt}
-
-\newlength{\ProjectTopSep}   \setlength{\ProjectTopSep}{1pt}
-\newlength{\ProjectItemSep}  \setlength{\ProjectItemSep}{1pt}
-
-\newlength{\SectionBefore}   \setlength{\SectionBefore}{8pt}
-\newlength{\SectionAfter}    \setlength{\SectionAfter}{8pt}
+\newlength{\ListLeftMargin} \setlength{\ListLeftMargin}{0.15in}
+\newlength{\ListTopSep} \setlength{\ListTopSep}{0pt}
+\newlength{\ListItemSep} \setlength{\ListItemSep}{3pt}
+\newlength{\ListParsep} \setlength{\ListParsep}{0pt}
+\newlength{\ProjectTopSep} \setlength{\ProjectTopSep}{1pt}
+\newlength{\ProjectItemSep} \setlength{\ProjectItemSep}{1pt}
+\newlength{\SectionBefore} \setlength{\SectionBefore}{6pt}
+\newlength{\SectionAfter} \setlength{\SectionAfter}{6pt}
 
 % Apply list settings globally (can be overridden locally)
 \setlist[itemize]{leftmargin=\ListLeftMargin, topsep=\ListTopSep, itemsep=\ListItemSep, parsep=\ListParsep}
@@ -92,7 +89,6 @@
 \newcommand{\OrgLine}[2]{%
   \noindent\small\deemph{#1} \hfill \textit{\small\deemph{\textcolor{marineblue}{#2}}}%
 }
-
 \newcommand{\ProjHeading}[1]{%
   \item \textbf{#1}%
 }
@@ -121,7 +117,6 @@
 \begin{document}
 \raggedright % ensure left-aligned text (no full justification)
 \graphicspath{{./img}}
-
 \vspace*{6pt} % small extra top padding
 
 % HEADER: two columns — contact info | skills
@@ -148,10 +143,8 @@
 
 % EXPERIENCE
 \section{Experience}
-
 \PositionHeader{Cloudzy.com}{VPS Provider since 2008. \href{https://www.linkedin.com/company/cloudzyvps/}{in/co/cloudzyvps}}{Full-Stack Software Developer}{Nov, 2024 -- Present}
 \begin{ProjectBlock}
-
   \ProjHeading{Status Page}
     \begin{itemize}[leftmargin=*, topsep=\ProjectTopSep, itemsep=\ProjectItemSep, parsep=0pt, label=\textbullet]
       \item Designed a multi-tenant architecture allowing tenants to define groups and services, with subscription options to expose services externally
@@ -159,33 +152,28 @@
       \item Built active-active, masterless multi-region replication with auto-provisioning
       \item Built Cloudflare Workers for routing, load balancing, and status pages
     \end{itemize}
-
   \ProjHeading{Billing System}
     \begin{itemize}[leftmargin=*, topsep=\ProjectTopSep, itemsep=\ProjectItemSep, parsep=0pt, label=\textbullet]
-      \item Improved backend reliability through refactoring and architecture cleanup
+      \item Reduced production incidents and cut technical debt by refactoring and cleaning up the billing system architecture, improving long-term backend reliability
       \item Designed a legacy replacement with GDPR and IFRS compliance
     \end{itemize}
-
   \ProjHeading{Mailserver}
     \begin{itemize}[leftmargin=*, topsep=\ProjectTopSep, itemsep=\ProjectItemSep, parsep=0pt, label=\textbullet]
       \item Built and operated a scalable multi-region email platform; added Grafana-based observability for latency, bounces, and throughput
       \item Automated RFC 5965 abuse handling
     \end{itemize}
-
   \ProjHeading{Main Website}
     \begin{itemize}[leftmargin=*, topsep=\ProjectTopSep, itemsep=\ProjectItemSep, parsep=0pt, label=\textbullet]
-      \item Unified multiple legacy sites into one application
+      \item Eliminated duplicate infrastructure and content-management overhead by unifying multiple legacy sites into one application
       \item Built custom WordPress plugins and Elementor widgets; consolidated dozens of plugins into one solution
       \item Implemented ``sunrise'' logic with an Elementor child theme and snippets for staging/production proxy rules, scaling, load balancing, and access control
       \item Automated SEO tests using Google Apps Script, and CI/CD for multi-regional replication; implemented tiny self-hosted comment spam detection system, and single-binary optimizer to improve static files at the edge
     \end{itemize}
-
   \ProjHeading{General tasks}
     \begin{itemize}[leftmargin=*, topsep=\ProjectTopSep, itemsep=\ProjectItemSep, parsep=0pt, label=\textbullet]
       \item Reverse-engineered Cloudflare rules; implemented multiple MVPs for a shared-hosting platform; Billing as a Service; Applicant Tracking System; Core Web Vitals monitoring; Live Chat + AI; Marketing Automation Platform; Developer CLI
     \end{itemize}
 \end{ProjectBlock}
-
 \PositionHeader{Arg Group (Gordarg.com) \& Previous Experiences}{Design and development of custom-built software solutions for business. \href{https://www.gordarg.com/}{gordarg.com}}{Founder \& Software Engineer}{2018 -- 2024}
 \begin{itemize}[leftmargin=\ListLeftMargin, topsep=\ListTopSep, itemsep=\ListItemSep, parsep=\ListParsep]
   \item Founded the company and led a team of 3--5 engineers serving 50\textsuperscript{+} clients.
@@ -193,18 +181,28 @@
   \item Highlighted below are some of the key projects where personal contributions were particularly significant and were recognized through numerous recommendation letters from satisfied customers.
   \item \textbf{Back-end Developer at Mr Bilit Group} --- As a remote developer, worked on a legacy PHP codebase and helped transition it into a more scalable C\# solution, contributing to the system that synchronized hundreds of thousands of bus and plane seat statuses for reservation platforms.
   \item \textbf{CTO at Tokan Tav Tejarat (Hamtire)} --- Responsible for automating data-gathering processes and contributing to the development of solutions for importing heavy-vehicle tires, while helping guide the team toward delivering these systems to market.
-  \item \textbf{Site Reliability Engineer at Zoomila.com} --- Broke a large legacy codebase into several maintainable containers, removing a major bottleneck that had been slowing down the project's refactoring efforts, and helped make the transition to a cleaner, more modular architecture possible.
+  \item \textbf{Site Reliability Engineer at Zoomila.com} --- Removed the single biggest bottleneck blocking the team's refactoring effort by breaking a large legacy codebase into several maintainable containers, unlocking a cleaner, more modular architecture.
+\end{itemize}
+
+% PROJECTS
+\section{Projects}
+\begin{itemize}[leftmargin=\ListLeftMargin, label={}]
+  \item \textbf{\href{https://github.com/tayyebi/mailserver}{Mailserver}} $|$ \emph{since 2024, 2 yrs old}. A fully self-hosted, single-container mail server (Rust, Postfix, Dovecot, OpenDKIM) with a built-in admin dashboard, webmail, DKIM/DMARC tooling, CalDAV/CardDAV sync, and an MCP API for AI-assistant integration.
+  \item \textbf{\href{https://www.lpad.ir}{Launchpad}}. A Persian-language Android productivity app for task management, a built-in timer, and a home-screen widget that surfaces task status at a glance.
+  \item \textbf{\href{https://github.com/tayyebi/agentless-monitoring}{Agentless Monitor}} $|$ \emph{since 2025, 1.2 yrs old}. An Elixir/Rust SSH-based server monitoring dashboard that tracks CPU, memory, disk, network, and port status across a fleet with zero agent installs.
+  \item \textbf{\href{https://github.com/tayyebi/laravel-docker-web-hosting}{Laravel Docker Web Hosting}} $|$ \emph{since 2023, 3.2 yrs old}. A Laravel 12 + Docker self-hosted hosting control panel that provisions isolated per-site container stacks (web, database, phpMyAdmin, file manager) behind an Nginx/Lua reverse proxy.
+  \item \textbf{\href{https://github.com/tayyebi/deepr}{Deepr}} $|$ \emph{since 2025, 6 months old}. A .NET/Blazor multi-agent decision-support API that orchestrates AI and human councils through structured methods (Delphi, NGT, ADKAR, Weighted Deliberation) and analytical tools (SWOT, PESTLE) to reach and export ranked decisions.
+  \item \textbf{\href{https://github.com/tayyebi/streaming}{Streaming}} $|$ \emph{since 2018, 8.5 yrs old}. A Docker / Nginx-RTMP / stunnel guide and scripts for simulcasting a desktop or camera feed to multiple streaming destinations simultaneously.
+  \item \textbf{\href{https://github.com/tayyebi/TehranStocks}{TehranStocks}} $|$ \emph{since 2021, 5 yrs old}. A C\#/.NET service that fetches and organizes public market data from the Tehran Stock Exchange (TSETMC).
 \end{itemize}
 
 % VOLUNTEER
 \section{Volunteer}
-
 \PositionHeader{United Nations Volunteer}{UNEP and UNCCD accredited non governmental organization working for permaculture, mental health and education in India. \href{https://uvsociety.org}{uvsociety.org}}{Web Developer}{June 2022 -- December 2022}
 \begin{itemize}[leftmargin=\ListLeftMargin, topsep=\ListTopSep, itemsep=\ListItemSep, parsep=\ListParsep]
   \item Worked with 12 volunteers across time zones to build a multi-vendor marketplace for Indian farmers.
   \item Configured a WordPress/WooCommerce application behind a Dockerized Nginx Reverse Proxy, as a temporary solution.
 \end{itemize}
-
 \PositionHeader{Bu-Ali Sina University}{Design and delivery of workshops and crash courses at the Scientific Society of Computer Science and Engineering.}{Guest Lecturer}{2018 -- 2020}
 \begin{itemize}[leftmargin=\ListLeftMargin, topsep=\ListTopSep, itemsep=\ListItemSep, parsep=\ListParsep]
   \item Instructed the \href{https://github.com/tayyebi/BASU-Full-Stack-98}{\emph{Full-stack developer}} workshop and \href{https://github.com/tayyebi/BASU-MVC-99}{\emph{Advanced MVC}} crash course to familiarize students with industry standards.
@@ -224,7 +222,6 @@
     \begin{itemize}[leftmargin=*, topsep=\ProjectTopSep, itemsep=\ProjectItemSep, parsep=0pt, label=\textbullet]
       \item 4 days of challenging web, desktop, and mobile programming, data architecture, and software analysis in the world's largest skills competition welcoming tens of talented youth professionals from different countries.
     \end{itemize}
-
   \item \textbf{Khwarizmi Youth Award 2015} $|$ \emph{National Ranked 3\textsuperscript{rd}}
     \begin{itemize}[leftmargin=*, topsep=\ProjectTopSep, itemsep=\ProjectItemSep, parsep=0pt, label=\textbullet]
       \item Implemented a centralized authentication and authorization software, and was honored to get a place among 45 awarded students out of 25339 (top \(\frac{1}{10}\)\%) in the most creditable scientific festival of the nation, at the age of 17.
@@ -249,11 +246,11 @@
 \end{itemize}
 
 % FOOTER NOTE centered at bottom with two lines
-\vfill
+\vspace{6pt}
 \begin{center}
   \tiny
   \deemph{Some of the organizations and media also wrote 'Tayyebi' as 'Tayebi' / 'Mohammad' as 'Mohamad' / '..dReza' as '..d Reza' which are also accepted.} \\
-  \deemph{Updated May 19th, 2026.}
+  \deemph{Updated June 25th, 2026.}
 \end{center}
 
 \end{document}
