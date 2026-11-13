@@ -92,7 +92,7 @@
 \newcommand{\entry}[4]{%
   \par\addvspace{6pt}%
   \stepcounter{entrybm}%
-  \pdfbookmark[1]{#1 — #2}{entry\theentrybm}%
+  \pdfbookmark[2]{#1 — #2}{entry\theentrybm}%  % <-- CHANGED TO LEVEL 2
   {\bfseries\color{ultramarine}#1}\hfill\deemph{#4}\par\nobreak
   {\color{marineblue}#2}\hfill\deemph{#3}\par\nobreak
   \vspace{1pt}}
@@ -102,7 +102,7 @@
 \newcommand{\brief}[4]{%
   \par\addvspace{5pt}%
   \stepcounter{briefbm}%
-  \pdfbookmark[1]{#1}{brief\thebriefbm}%
+  \pdfbookmark[2]{#1}{brief\thebriefbm}%       % <-- CHANGED TO LEVEL 2
   {\bfseries\color{ultramarine}#1} \deemph{· #2}\hfill\deemph{#3}\par\nobreak
   #4\par}
 
