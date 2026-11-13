@@ -1,63 +1,99 @@
 
 \documentclass[10pt,a4paper]{article}
 
-% ENCODING & MICRO-TYPOGRAPHY
+% =========================================================
+% 1. ENCODING & MICRO-TYPOGRAPHY
+% =========================================================
+
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{microtype}
 
-% LAYOUT
+% Improve PDF text extraction
+\input{glyphtounicode}
+\pdfgentounicode=1
+
+% =========================================================
+% 2. LAYOUT & TYPOGRAPHY
+% =========================================================
+
 \usepackage[a4paper, left=0.6in, right=0.6in, top=0.5in, bottom=0.5in]{geometry}
+
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0pt}
 \linespread{1.18}
 
-% UNICODE / PDF TEXT EXTRACTION
-\input{glyphtounicode}
-\pdfgentounicode=1
-
-% FONTS
+% Preserve original font choices
 \usepackage[sfdefault]{noto-sans}
 \usepackage{CormorantGaramond}
 \usepackage{charter}
 
-% PACKAGES
+% =========================================================
+% 3. PACKAGES
+% =========================================================
+
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{titlesec}
 \usepackage{enumitem}
 \usepackage{needspace}
 \usepackage{fontawesome}
-\usepackage[hidelinks,bookmarks=true,bookmarksopen=true,bookmarksnumbered=false]{hyperref}
+\usepackage[
+  hidelinks,
+  bookmarks=true,
+  bookmarksopen=true,
+  bookmarksnumbered=false,
+  pdfdisplaydoctitle=true,
+  pdflang={en-US}
+]{hyperref}
 
+% PDF metadata
 \hypersetup{
-  pageanchor=false,
   pdftitle={MohammadReza Tayyebi - Resume},
   pdfauthor={MohammadReza Tayyebi},
   pdfsubject={Technical Product Management and Software Engineering},
-  pdfkeywords={Software Engineering, Technical Product Management, Cloud Infrastructure}
+  pdfkeywords={
+    Software Engineering,
+    Technical Product Management,
+    Full Stack Development,
+    Cloud Infrastructure,
+    Systems Architecture,
+    Business Analysis,
+    DevOps,
+    Product Strategy
+  }
 }
 
-% COLORS & PAGE
+% =========================================================
+% 4. COLORS & PAGE
+% =========================================================
+
 \definecolor{ultramarine}{RGB}{0,32,96}
 \definecolor{marineblue}{RGB}{9,129,209}
 \definecolor{heritagered}{RGB}{147,19,20}
 \definecolor{cream}{HTML}{fefdfc}
+
 \pagecolor{cream}
 
-% EXTERNAL-LINK ICON
+% External-link icon
 \let\orighref\href
 \renewcommand{\href}[2]{%
   \orighref{#1}{#2\,{\textsuperscript{\tiny{\textcolor{heritagered}{\faExternalLink}}}}}%
 }
 
-% TABLE / HEADER GAPS
+% =========================================================
+% 5. TABLE / HEADER GAPS
+% =========================================================
+
 \setlength{\tabcolsep}{0in}
 \setlength{\headheight}{12pt}
 \setlength{\headsep}{6pt}
 \setlength{\footskip}{12pt}
 
-% SPACING & LIST DEFAULTS
+% =========================================================
+% 6. SPACING & LIST DEFAULTS
+% =========================================================
+
 \newlength{\ListLeftMargin}
 \setlength{\ListLeftMargin}{0.15in}
 
@@ -89,11 +125,39 @@
 }
 
 % =========================================================
-% SECTION INTERFACE & PDF DOCUMENT OUTLINE
+% 7. SEMANTIC DOCUMENT HIERARCHY
+%
+% PDF outline:
+% Level 1: Main CV sections
+% Level 2: Employers, projects, institutions, etc.
+% Level 3: Subprojects and organizational components
+%
+% Bookmarks are independent of visible typography.
 % =========================================================
 
 \newcounter{cvsection}
+\newcounter{cvbookmark}
 
+% Level 1: Main section
+\newcommand{\cvsection}[1]{%
+  \par
+  \refstepcounter{cvsection}%
+  \pdfbookmark[1]{#1}{cv.section.\thecvsection}%
+  \section*{#1}%
+}
+
+% Level 2: Individual entity
+\newcommand{\cvbookmark}[2][2]{%
+  \refstepcounter{cvbookmark}%
+  \pdfbookmark[#1]{#2}{cv.entry.\thecvbookmark}%
+}
+
+% Level 3: Subcomponent
+\newcommand{\cvsubbookmark}[1]{%
+  \cvbookmark[3]{#1}%
+}
+
+% Visible section styling
 \titleformat{\section}
   {\raggedright\normalsize\color{ultramarine}}
   {}{0em}
@@ -102,17 +166,8 @@
 
 \titlespacing*{\section}{0pt}{\SectionBefore}{\SectionAfter}
 
-\newenvironment{cvsection}[2][ultramarine]{%
-  \par
-  \refstepcounter{cvsection}%
-  \section*{\textcolor{#1}{#2}}%
-  \pdfbookmark[1]{#2}{cvsection.\thecvsection}%
-}{%
-  \par
-}
-
 % =========================================================
-% ENTRY COMPONENTS
+% 8. ENTRY COMPONENTS
 % =========================================================
 
 \newcommand{\deemph}[1]{{\color{gray}#1}}
@@ -133,7 +188,7 @@
   {\noindent\normalsize\bfseries\color{black}#1\par}%
   \if\relax\detokenize{#2}\relax
   \else
-    {\noindent\fontsize{9pt}{10.5pt}\selectfont\deemph{,#2}\par}%
+    {\noindent\fontsize{9pt}{10.5pt}\selectfont\deemph{#2}\par}%
   \fi
 }
 
@@ -141,7 +196,7 @@
 
 \makeatother
 
-% Full entry: title, organization, and supporting detail.
+% Full entry: title, organization, dates, title color
 \newcommand{\roleentry}[4]{%
   \ifhighlightedentries
     \iffirsthighlightedentry
@@ -157,7 +212,10 @@
   \vspace{1pt}\roleorg{#2}%
 }
 
-% Compact entry.
+\newcommand{\role}[3]{\roleentry{#1}{#2}{#3}{black}}
+\newcommand{\jobrole}[3]{\roleentry{#1}{#2}{#3}{ultramarine}}
+
+% Compact entry
 \newcommand{\compactrole}[3]{%
   \Needspace{3\baselineskip}%
   {\noindent\normalsize\bfseries\color{black}#1\hfill
@@ -166,10 +224,7 @@
   {\noindent\fontsize{9pt}{10.5pt}\selectfont\deemph{#2}\par}%
 }
 
-\newcommand{\role}[3]{\roleentry{#1}{#2}{#3}{black}}
-\newcommand{\jobrole}[3]{\roleentry{#1}{#2}{#3}{ultramarine}}
-
-% Project: name, description, dates.
+% Project: name, description, dates
 \newcommand{\project}[3]{%
   \Needspace{4\baselineskip}%
   \noindent\textbf{#1}\hfill
@@ -177,7 +232,7 @@
   \noindent\small\deemph{#2}\par\vspace{2pt}%
 }
 
-% Publication: title, description, status.
+% Publication: title, description, status
 \newcommand{\publication}[3]{%
   \Needspace{3\baselineskip}%
   {\noindent\normalsize\bfseries\color{black}#1\hfill
@@ -186,14 +241,18 @@
   {\noindent\fontsize{9pt}{10.5pt}\selectfont\deemph{#2}\par}%
 }
 
-% REMOVE PAGE NUMBERS
+% =========================================================
+% 9. PAGE NUMBERING
+% =========================================================
+
 \pagenumbering{gobble}
 
 % =========================================================
-% DOCUMENT
+% 10. DOCUMENT
 % =========================================================
 
 \begin{document}
+
 \raggedright
 \vspace*{6pt}
 
@@ -208,7 +267,7 @@
   \href{tel:+989120982276}{(+98) 912 098 2276} \,|\, 
   \href{mailto:m@tyyi.net}{m@tyyi.net} \,|\, 
   \href{https://www.tyyi.net}{www.tyyi.net} \,|\, 
-  \href{https://github.com/tayyebi}{github.com/tayyebi} \\
+  \href{https://github.com/tayyebi}{github.com/tayyebi}\\
   Address: No 5, Bashiri, Vali-asr, Tehran, Iran
 \end{center}
 
@@ -216,11 +275,10 @@
 % SUMMARY
 % =========================================================
 
-\begin{cvsection}{Summary}
-\end{cvsection}
+\cvsection{Summary}
 
 \noindent
-World Champion, National Medalist, Competitve Software Developer and Engineer with 10+ years of experience designing, building, and operating complex software systems across cloud infrastructure, SaaS, fintech, marketplaces, and IoT. Combines hands-on engineering expertise with business analysis, systems architecture, and product strategy, taking projects from early-stage requirements and architectural design through implementation, deployment, and production operations. Experienced in modernizing legacy systems, building scalable distributed architectures, automating business processes, and leading cross-functional engineering teams. Holds an MBA with a background in Computer Engineering, combining technical depth with business and organizational perspectives.
+World Champion, National Medalist, Competitive Software Developer and Engineer with 10+ years of experience designing, building, and operating complex software systems across cloud infrastructure, SaaS, fintech, marketplaces, and IoT. Combines hands-on engineering expertise with business analysis, systems architecture, and product strategy, taking projects from early-stage requirements and architectural design through implementation, deployment, and production operations. Experienced in modernizing legacy systems, building scalable distributed architectures, automating business processes, and leading cross-functional engineering teams. Holds an MBA with a background in Computer Engineering, combining technical depth with business and organizational perspectives.
 
 \vspace{3pt}
 
@@ -228,16 +286,21 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 % SKILLS
 % =========================================================
 
-\begin{cvsection}{Skills}
-\end{cvsection}
+\cvsection{Skills}
 
 \begin{itemize}[leftmargin=0pt, label={}]
   \small
+
   \item \textbf{Languages \& Frameworks:} C\#, C++ (11/14), PHP, Laravel, JavaScript, Vanilla JS, TypeScript, Node.js, React, Python (TensorFlow), Java (Android), Kotlin, Dart (basic), GoLang (basic)
+
   \item \textbf{Web \& Desktop:} HTML5, CSS3, jQuery, ASP.NET Core 3, ASP.NET MVC, ASP.NET Web Forms, ASP.NET Web API, WCF, WordPress, WooCommerce, Windows Forms, WPF, Qt, Xamarin, Flutter (basic), React Native (basic)
+
   \item \textbf{Databases:} SQL Server, MySQL, MongoDB (basic), SQLite, Entity Framework 6
+
   \item \textbf{DevOps \& Infrastructure:} Linux (Ubuntu, Debian), Windows Server, Docker, Nginx, DigitalOcean, S3, CI/CD, Git, CDN, SMTP, KMS, FTP, monitoring, VirtualBox
+
   \item \textbf{Architecture \& Analysis:} UML, ERD and normalization, data flow diagrams, multi-tier and domain-driven design, design patterns, BI and executive dashboards, data warehousing, security and controls design, UX and interface design
+
   \item \textbf{Project Management:} Business Analysis, Kanban, SWOT, MCDA, Work Breakdown Structures, Microsoft TFS, cost and timing control, quality testing
 \end{itemize}
 
@@ -245,13 +308,16 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 % EXPERIENCE
 % =========================================================
 
-\begin{cvsection}{Experience}
-\end{cvsection}
+\cvsection{Experience}
 
 \begin{highlightedentries}
 
+% CLOUDZY
+\cvbookmark{Cloudzy AI LLC — Senior Full-Stack Software Engineer}
+
 \jobrole{Sr. Full-Stack Software Engineer (Full-time, On-site)}{\href{https://www.cloudzy.com/}{Cloudzy AI LLC}, Cloud VPS Provider since 2008 hosting 60K+ instances in more than 9 data-centers world-wide}{2018 -- Nov 2024}
 
+\cvsubbookmark{Uptime Service}
 \Needspace{5\baselineskip}
 \textbf{Uptime Service}
 \begin{itemize}[leftmargin=0.3in]
@@ -261,6 +327,7 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Built Cloudflare Workers for routing, load balancing, and status pages.
 \end{itemize}
 
+\cvsubbookmark{Billing System}
 \Needspace{3\baselineskip}
 \textbf{Billing System}
 \begin{itemize}[leftmargin=0.3in]
@@ -268,6 +335,7 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Designed a legacy replacement with GDPR and IFRS compliance.
 \end{itemize}
 
+\cvsubbookmark{Mailserver}
 \Needspace{3\baselineskip}
 \textbf{Mailserver}
 \begin{itemize}[leftmargin=0.3in]
@@ -275,6 +343,7 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Automated RFC 5965 abuse handling.
 \end{itemize}
 
+\cvsubbookmark{Main Website}
 \Needspace{4\baselineskip}
 \textbf{Main Website}
 \begin{itemize}[leftmargin=0.3in]
@@ -284,11 +353,15 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Automated SEO tests with Google Apps Script; built CI/CD for multi-regional replication; implemented a self-hosted comment spam detection system and a single-binary optimizer for static files at the edge.
 \end{itemize}
 
+\cvsubbookmark{General Tasks}
 \Needspace{3\baselineskip}
 \textbf{General Tasks}
 \begin{itemize}[leftmargin=0.3in]
   \item Reverse-engineered Cloudflare rules; delivered MVPs for a shared-hosting platform, Billing as a Service, an Applicant Tracking System, Core Web Vitals monitoring, Live Chat with AI, a Marketing Automation Platform, a Spam Detection System, and a Developer CLI.
 \end{itemize}
+
+% ARG GROUP
+\cvbookmark{Arg Group — Founder and Software Engineer}
 
 \jobrole{Founder \& Software Engineer (Full-time, On-site)}{\href{https://www.gordarg.com/}{Arg Group}, Design and development of custom-built software solutions}{2018 -- Nov 2024}
 \begin{itemize}
@@ -296,6 +369,9 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item \href{https://gordarg.com}{Gordarg.com} oversees subsidiaries such as a data aggregation service and several mobile applications, all accessible through the website.
   \item Delivered key projects with significant personal contributions, recognized through numerous recommendation letters from satisfied customers.
 \end{itemize}
+
+% ZOOMILA
+\cvbookmark{Zoomila — Software Engineer}
 
 \jobrole{Software Engineer (On-site)}{\href{https://zoomila.com}{Zoomila}, Real estate property portal}{Feb 2023 -- Aug 2023}
 \begin{itemize}
@@ -305,11 +381,17 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Broke a large legacy codebase into several maintainable containers, removing the main bottleneck in the team's refactoring effort.
 \end{itemize}
 
+% PLOMPIN
+\cvbookmark{Plompin Sanat — Software Developer}
+
 \jobrole{Software Developer (Hybrid)}{\href{https://plompin.com}{Plompin Sanat}, Designer and manufacturer of security seals}{Jan 2018 -- Jan 2023}
 \begin{itemize}
   \item Redesigned and maintained a network-based desktop application for 4 manufacturing and 2 packaging lines, tracking each of 1 million industrial seal pieces per month from assembly to packaging.
   \item Ran under heavy load for more than 5 years, handling high-frequency transactions and real-time monitoring reports on Microsoft SQL Server.
 \end{itemize}
+
+% HAMTIRE
+\cvbookmark{Tokan Tav Tejarat (Hamtire) — Team Lead}
 
 \jobrole{Team-Lead (Full-time, On-site)}{\href{https://hamtire.com}{Tokan Tav Tejarat (Hamtire)}, Trading company and B2B marketplace for tires and wheels, Hamedan, Iran}{Jun 2022 -- Dec 2022}
 \begin{itemize}
@@ -321,6 +403,9 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Automated data-gathering processes and contributed to solutions for importing heavy-vehicle tires.
 \end{itemize}
 
+% MR BILIT
+\cvbookmark{Mr. Bilit Group — PHP and ASP.NET Developer}
+
 \jobrole{PHP \& ASP.NET Core C\# Developer (Full-time, Remote)}{Mr. Bilit Group, Travel search and booking (\href{https://mrbilit.ir}{MrBilit.ir}, MrBilit Charter Flights, \href{https://irangard.com}{IranGard.com}), Isfahan, Iran}{Jan 2021 -- May 2021}
 \begin{itemize}
   \item Supported the first integrated travel search system, covering airline, train, and bus reservations and other tourist services.
@@ -329,6 +414,9 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Implemented RESTful APIs for business logic and participated in API and database development across multiple languages.
 \end{itemize}
 
+% ATINET
+\cvbookmark{AtiNet — Software Developer}
+
 \jobrole{Software Developer (Full-time, On-site)}{\href{https://atinet.ir}{AtiNet}, First Internet Service Provider (ISP) in western Iran, with IoT projects}{2018 -- 2021}
 \begin{itemize}
   \item Developed server-side IoT software storing and forwarding hundreds of thousands of network requests per day from hundreds of sensors, using MySQL, PHP, and GoLang.
@@ -336,10 +424,16 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Project Manager for AtiNet Sina Parsian (2018 -- 2019, NDA); still providing support.
 \end{itemize}
 
+% RAYAN
+\cvbookmark{Rayan Electronic Andish Hegmataneh — Software Engineer}
+
 \jobrole{Software Engineer (Part-time, Hybrid)}{Rayan Electronic Andish Hegmataneh}{2018 -- 2019}
 \begin{itemize}
   \item Implemented GPS back-end, web, and mobile front-end.
 \end{itemize}
+
+% FREELANCE
+\cvbookmark{Freelance and Independent Software Development}
 
 \jobrole{Software Developer}{Freelancer \& Independent Contractor, Custom software design, IoT and sensor networks, business websites}{2012 -- Nov 2024}
 \begin{itemize}
@@ -347,6 +441,9 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Developed 3 IoT and sensor network projects (back-end and sockets) with electronics and robotics engineers, plus 15+ desktop and 30+ web applications.
   \item Business analysis and database design; server configuration and tuning. Recommended by 10+ customers and managers.
 \end{itemize}
+
+% NASHR
+\cvbookmark{Nashr-e-Roozandish — IT and Website Administration}
 
 \jobrole{IT Man \& Website Administrator (Full-time, On-site)}{Nashr-e-Roozandish}{Summer 2012}
 \begin{itemize}
@@ -360,10 +457,11 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 % VOLUNTEER
 % =========================================================
 
-\begin{cvsection}{Volunteer}
-\end{cvsection}
+\cvsection{Volunteer}
 
 \begin{highlightedentries}
+
+\cvbookmark{Universal Versatile Society — IT Consultant and Web Developer}
 
 \jobrole{IT Consultant \& Web Developer (Part-time, Remote)}{\href{https://uvsociety.org}{Universal Versatile Society} (UNEP \& UNCCD accredited NGO), Remote, India}{Jun 2022 -- Jun 2023}
 \begin{itemize}
@@ -374,6 +472,8 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \Needspace{3\baselineskip}
   \item Implemented tools and workflows for technical documentation, teamwork, and DevOps; standardized documentation; back-end in Python, front-end in PHP.
 \end{itemize}
+
+\cvbookmark{Sariab — Founder and Director}
 
 \jobrole{Founder \& Director (Part-time, Hybrid)}{Sariab, university project, Bu-Ali Sina University}{2018 -- 2020}
 \begin{itemize}
@@ -388,10 +488,11 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 % TEACHING
 % =========================================================
 
-\begin{cvsection}{Teaching}
-\end{cvsection}
+\cvsection{Teaching}
 
 \begin{highlightedentries}
+
+\cvbookmark{Bu-Ali Sina University — Instructor and Guest Lecturer}
 
 \jobrole{Instructor / Guest Lecturer}{\href{https://www.basu.ac.ir}{Bu-Ali Sina University}, Scientific Society of Computer Science and Engineering}{2018 -- 2020}
 \begin{itemize}
@@ -399,15 +500,21 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Taught Full-Stack Programming in the Summer School of the Student Scientific Society of Computer Engineering (2019).
 \end{itemize}
 
+\cvbookmark{Iran Technical and Vocational Organization — Instructor}
+
 \jobrole{Instructor}{Iran Technical and Vocational Organization / Khaje Nasir Institute, Hamedan, Iran}{2016 -- 2018}
 \begin{itemize}
   \item Taught RESTful application development, ASP.NET Web Forms, WCF, WPF, Xamarin, Windows Forms, and SQL Server.
 \end{itemize}
 
+\cvbookmark{Private Programming Tutor and Coach}
+
 \jobrole{Private Programming Tutor \& Coach}{Freelance, for several companies}{2012 -- Nov 2024}
 \begin{itemize}
   \item Provided private programming tutoring and coaching.
 \end{itemize}
+
+\cvbookmark{Madani High School — Teacher}
 
 \jobrole{Teacher (ActionScript \& Game Design)}{Madani High School, Hamedan, Iran}{2013 -- 2018}
 \begin{itemize}
@@ -420,63 +527,75 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 % PROJECTS
 % =========================================================
 
-\begin{cvsection}{Projects}
-\end{cvsection}
+\cvsection{Projects}
 
+\cvbookmark{Mailserver — Rust-based Self-hosted Email Platform}
 \project{\href{https://github.com/tayyebi/mailserver}{Mailserver}}{A fully self-hosted, single-container mail server (Rust, Postfix, Dovecot, OpenDKIM) with an admin dashboard, webmail, DKIM/DMARC tooling, CalDAV/CardDAV sync, and an MCP API for AI-assistant integration.}{2024 -- Present}
 
+\cvbookmark{Launchpad — Productivity Application}
 \project{\href{https://www.lpad.ir}{Launchpad}}{A Persian-language Android productivity app with task management, a built-in timer, and a home-screen widget showing task status.}{Present}
 
+\cvbookmark{Agentless Monitor — Infrastructure Monitoring}
 \project{\href{https://github.com/tayyebi/agentless-monitoring}{Agentless Monitor}}{An Elixir/Rust SSH-based server monitoring dashboard tracking CPU, memory, disk, network, and port status across a fleet with zero agent installs.}{2025 -- Present}
 
+\cvbookmark{Laravel Docker Web Hosting — Hosting Control Panel}
 \project{\href{https://github.com/tayyebi/laravel-docker-web-hosting}{Laravel Docker Web Hosting}}{A Laravel 12 and Docker self-hosted hosting control panel that provisions isolated per-site container stacks (web, database, phpMyAdmin, file manager) behind an Nginx/Lua reverse proxy.}{2023 -- Present}
 
+\cvbookmark{Deepr — Multi-agent Decision Support}
 \project{\href{https://github.com/tayyebi/deepr}{Deepr}}{A .NET/Blazor multi-agent decision-support API that orchestrates AI and human councils through structured methods (Delphi, NGT, ADKAR, Weighted Deliberation) and analytical tools (SWOT, PESTLE) to produce and export ranked decisions.}{2025 -- Present}
 
+\cvbookmark{Streaming — Multi-destination Streaming}
 \project{\href{https://github.com/tayyebi/streaming}{Streaming}}{A Docker, Nginx-RTMP, and stunnel guide and scripts for simulcasting a desktop or camera feed to multiple streaming destinations at once.}{2018 -- Present}
 
+\cvbookmark{TehranStocks — Financial Market Data}
 \project{\href{https://github.com/tayyebi/TehranStocks}{TehranStocks}}{A C\#/.NET service that fetches and organizes public market data from the Tehran Stock Exchange (TSETMC).}{2021 -- Present}
 
 % =========================================================
 % PUBLICATIONS
 % =========================================================
 
-\begin{cvsection}{Publications}
-\end{cvsection}
+\cvsection{Publications}
 
+\cvbookmark{Department of Information Technology and other magics}
 \publication{\href{https://tayyebi.github.io/devops-book/}{Department of Information Technology and other magics}}{Open-source book (in progress): a professional guide to installing IT infrastructure and organizing teams.}{Book}
 
+\cvbookmark{MBATalks.ir}
 \publication{\href{https://mbatalks.ir}{MBATalks.ir}}{Online community of MBA professionals. Listed as MBA Information Technology Management Expert.}{Website}
 
+\cvbookmark{QuantumEngineering.ir}
 \publication{\href{https://quantumengineering.ir}{QuantumEngineering.ir}}{A practical path from classical software engineering to quantum computing, quantum information, and research.}{Website}
 
 % =========================================================
 % EDUCATION
 % =========================================================
 
-\begin{cvsection}{Education}
-\end{cvsection}
+\cvsection{Education}
 
+\cvbookmark{Master of Business Administration — Khaje Nasir Toosi University}
 \compactrole{Master of Business Administration (MBA)}{\href{https://www.kntu.ac.ir}{Khaje Nasir Toosi University of Technology}, Tehran, Iran. Minor in Marketing Management.}{Oct 2021 -- Jul 2023}
 
+\cvbookmark{Bachelor of Science in Computer Engineering — Bu-Ali Sina University}
 \compactrole{Bachelor of Science in Computer Engineering}{\href{https://www.basu.ac.ir}{Bu-Ali Sina University}, Hamedan, Iran. Minor in Information Technology.}{Mar 2016 -- Jul 2020}
 
+\cvbookmark{Diploma in Mathematics and Physics}
 \compactrole{Diploma in Mathematics and Physics}{Madani High School, Hamedan, Iran}{Sep 2013 -- Aug 2018}
 
 % =========================================================
 % HONORS & AWARDS
 % =========================================================
 
-\begin{cvsection}{Honors \& Awards}
-\end{cvsection}
+\cvsection{Honors \& Awards}
 
+\cvbookmark{WorldSkills 2017 — National Gold Medal}
 \compactrole{\href{https://www.credly.com/badges/4333ef3c-2cf8-43f3-a102-33ffb50ba6f2/public_url}{WorldSkills 2017}, Abu Dhabi}{Champion, National Gold Medalist (IT -- Software Solutions for Business). Some records list this result as ranked 20th.}{2017}
 \begin{itemize}
   \item Four days of web, desktop, and mobile programming, data architecture, business analysis, and problem solving against talented youth from many countries.
 \end{itemize}
 
+\cvbookmark{IranSkills 2016 — First Place}
 \compactrole{IranSkills 2016}{Ranked 1st, Gold Medal (IT -- Software Solutions for Business)}{2016}
 
+\cvbookmark{Khwarizmi Youth Award 2015 — National Third Place}
 \compactrole{Khwarizmi Youth Award 2015}{National Ranked 3rd (Computer Science and Engineering)}{2015}
 \begin{itemize}
   \item Selected as one of 45 students out of 25,339 (top 10\%) at the nation's most creditable scientific festival.
@@ -487,55 +606,62 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 % ARTS
 % =========================================================
 
-\begin{cvsection}{Arts}
-\end{cvsection}
+\cvsection{Arts}
 
+\cvbookmark{Music Awards — Ayeen Ensemble}
 \compactrole{Music Awards}{With Ayeen Ensemble}{2017}
 \begin{itemize}
   \item 2nd place, Fajr Festival, Hamedan
   \item 1st place, Niayesh Festival, Qazvin
 \end{itemize}
 
+\cvbookmark{Kanun Player — Ayeen Ensemble}
 \compactrole{Kanun Player}{\href{https://www.ayeenensemble.ir/}{Ayeen Ensemble}}{2017 -- 2024}
 
+\cvbookmark{Kanun Player — Alvand Orchestra}
 \compactrole{Kanun Player}{Alvand Orchestra}{2014 -- 2015}
 
 % =========================================================
 % CERTIFICATIONS
 % =========================================================
 
-\begin{cvsection}{Certifications}
-\end{cvsection}
+\cvsection{Certifications}
 
+\cvbookmark{Data Analytics: Foundations}
 \compactrole{\href{https://www.linkedin.com/learning/certificates/10c24841aac6b0c139f4971a8efd6d10356dc105124e31fa10eb32aa14ce3392}{Data Analytics: Foundations}}{NASBA, LinkedIn Learning}{2023}
 
+\cvbookmark{Business Process Modeling}
 \compactrole{\href{https://www.linkedin.com/learning/certificates/3d1e244d9234631a908175486d19855434634d7f61cec316ba4eb269bb041}{Business Process Modeling}}{PMI, LinkedIn Learning}{2023}
 
+\cvbookmark{Business Analysis Foundations}
 \compactrole{\href{https://www.linkedin.com/learning/certificates/51dd265ef63b58255245c8f7438549551c92d30031e81b9ad864ee6994e1f6e6}{Business Analysis Foundations}}{IIBA, LinkedIn Learning}{2023}
 
+\cvbookmark{Certified Instructor}
 \compactrole{Certified Instructor}{TVTO, Contract No. 5243 96/30\_475616/2}{2015}
 
+\cvbookmark{Enterprise Web Development with ASP.NET}
 \compactrole{Enterprise Web Development with ASP.NET}{TVTO, No. 90163030986}{2013}
 
 % =========================================================
 % SPEAKING & CONFERENCES
 % =========================================================
 
-\begin{cvsection}{Speaking \& Conferences}
-\end{cvsection}
+\cvsection{Speaking \& Conferences}
 
+\cvbookmark{Kazan, Russia — IranSkills Representative Expert}
 \compactrole{Kazan, Russia}{IranSkills representative expert}{2018}
 
+\cvbookmark{Alborz, Iran — National Skills Competitors Congress}
 \compactrole{Alborz, Iran}{Province representative at the first congress of national skills competitors, with the minister's assistant}{2016}
 
+\cvbookmark{Hamedan, Iran — Special Speaker}
 \compactrole{Hamedan, Iran}{Special speaker as top researcher in a session with education system chairmen and teachers}{2015}
 
 % =========================================================
 % LANGUAGES
 % =========================================================
 
-\begin{cvsection}{Languages}
-\end{cvsection}
+\cvsection{Languages}
 
 Persian (Native), English (Full professional proficiency), German (A2)
 
@@ -543,8 +669,12 @@ Persian (Native), English (Full professional proficiency), German (A2)
 % INTERESTS
 % =========================================================
 
-\begin{cvsection}{Interests}
+\cvsection{Interests}
+
 Cycling, night sky observation (Certified Night Sky Observer, Ibn-Sala Astronomy Center), robotics.
-\end{cvsection}
+
+% =========================================================
+% END DOCUMENT
+% =========================================================
 
 \end{document}
