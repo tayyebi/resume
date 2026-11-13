@@ -1,6 +1,7 @@
+
 \documentclass[10pt,a4paper]{article}
 
-% ENCODING & MICRO-TYPOS
+% ENCODING & MICRO-TYPOGRAPHY
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{microtype}
@@ -11,11 +12,11 @@
 \setlength{\parskip}{0pt}
 \linespread{1.18}
 
-% Preserve original unicode helpers (must exist in project)
+% UNICODE / PDF TEXT EXTRACTION
 \input{glyphtounicode}
 \pdfgentounicode=1
 
-% FONTS (preserve original choices)
+% FONTS
 \usepackage[sfdefault]{noto-sans}
 \usepackage{CormorantGaramond}
 \usepackage{charter}
@@ -26,9 +27,16 @@
 \usepackage{titlesec}
 \usepackage{enumitem}
 \usepackage{needspace}
-\usepackage{fontawesome} % external-link icon
-\usepackage[hidelinks]{hyperref}
-\hypersetup{pageanchor=false}
+\usepackage{fontawesome}
+\usepackage[hidelinks,bookmarks=true,bookmarksopen=true,bookmarksnumbered=false]{hyperref}
+
+\hypersetup{
+  pageanchor=false,
+  pdftitle={MohammadReza Tayyebi - Resume},
+  pdfauthor={MohammadReza Tayyebi},
+  pdfsubject={Technical Product Management and Software Engineering},
+  pdfkeywords={Software Engineering, Technical Product Management, Cloud Infrastructure}
+}
 
 % COLORS & PAGE
 \definecolor{ultramarine}{RGB}{0,32,96}
@@ -37,9 +45,11 @@
 \definecolor{cream}{HTML}{fefdfc}
 \pagecolor{cream}
 
-% EXTERNAL-LINK ICON (original styling)
+% EXTERNAL-LINK ICON
 \let\orighref\href
-\renewcommand{\href}[2]{\orighref{#1}{#2\,{\textsuperscript{\tiny{\textcolor{heritagered}{\faExternalLink}}}}}}
+\renewcommand{\href}[2]{%
+  \orighref{#1}{#2\,{\textsuperscript{\tiny{\textcolor{heritagered}{\faExternalLink}}}}}%
+}
 
 % TABLE / HEADER GAPS
 \setlength{\tabcolsep}{0in}
@@ -50,16 +60,22 @@
 % SPACING & LIST DEFAULTS
 \newlength{\ListLeftMargin}
 \setlength{\ListLeftMargin}{0.15in}
+
 \newlength{\ListTopSep}
 \setlength{\ListTopSep}{0pt}
+
 \newlength{\ListItemSep}
 \setlength{\ListItemSep}{3pt}
+
 \newlength{\ListParsep}
 \setlength{\ListParsep}{0pt}
+
 \newlength{\SectionBefore}
 \setlength{\SectionBefore}{6pt}
+
 \newlength{\SectionAfter}
 \setlength{\SectionAfter}{6pt}
+
 \newlength{\RoleEntrySpacing}
 \setlength{\RoleEntrySpacing}{12pt}
 
@@ -72,25 +88,38 @@
   before={\interlinepenalty=10000\relax}
 }
 
-% SECTION INTERFACE
+% =========================================================
+% SECTION INTERFACE & PDF DOCUMENT OUTLINE
+% =========================================================
+
+\newcounter{cvsection}
+
 \titleformat{\section}
   {\raggedright\normalsize\color{ultramarine}}
   {}{0em}
   {\Needspace{6\baselineskip}}
   [\color{marineblue}\titlerule]
+
 \titlespacing*{\section}{0pt}{\SectionBefore}{\SectionAfter}
 
 \newenvironment{cvsection}[2][ultramarine]{%
+  \par
+  \refstepcounter{cvsection}%
   \section*{\textcolor{#1}{#2}}%
+  \pdfbookmark[1]{#2}{cvsection.\thecvsection}%
 }{%
   \par
 }
 
+% =========================================================
 % ENTRY COMPONENTS
+% =========================================================
+
 \newcommand{\deemph}[1]{{\color{gray}#1}}
 
 \newif\ifhighlightedentries
 \newif\iffirsthighlightedentry
+
 \newenvironment{highlightedentries}{%
   \global\highlightedentriestrue
   \global\firsthighlightedentrytrue
@@ -99,17 +128,20 @@
 }
 
 \makeatletter
+
 \def\roleorgA#1,#2\@nil{%
   {\noindent\normalsize\bfseries\color{black}#1\par}%
   \if\relax\detokenize{#2}\relax
   \else
-    {\noindent\fontsize{9pt}{10.5pt}\selectfont\deemph{#2}\par}%
+    {\noindent\fontsize{9pt}{10.5pt}\selectfont\deemph{,#2}\par}%
   \fi
 }
+
 \def\roleorg#1{\roleorgA#1,\@nil}
+
 \makeatother
 
-% Full entry: title, organization, and supporting detail on separate levels.
+% Full entry: title, organization, and supporting detail.
 \newcommand{\roleentry}[4]{%
   \ifhighlightedentries
     \iffirsthighlightedentry
@@ -125,7 +157,7 @@
   \vspace{1pt}\roleorg{#2}%
 }
 
-% Compact entry for sections where organization detail should stay subdued.
+% Compact entry.
 \newcommand{\compactrole}[3]{%
   \Needspace{3\baselineskip}%
   {\noindent\normalsize\bfseries\color{black}#1\hfill
@@ -145,7 +177,7 @@
   \noindent\small\deemph{#2}\par\vspace{2pt}%
 }
 
-% Publication: title, description, status. No role-entry spacing is applied.
+% Publication: title, description, status.
 \newcommand{\publication}[3]{%
   \Needspace{3\baselineskip}%
   {\noindent\normalsize\bfseries\color{black}#1\hfill
@@ -154,36 +186,50 @@
   {\noindent\fontsize{9pt}{10.5pt}\selectfont\deemph{#2}\par}%
 }
 
-% Remove page numbers
+% REMOVE PAGE NUMBERS
 \pagenumbering{gobble}
 
+% =========================================================
 % DOCUMENT
+% =========================================================
+
 \begin{document}
 \raggedright
 \vspace*{6pt}
 
+% =========================================================
 % HEADER
+% =========================================================
+
 \begin{center}
   {\Large\bfseries\textcolor{ultramarine}{MohammadReza Tayyebi}}\\[3pt]
   {\normalsize\bfseries Technical Product Manager \& Software Engineer}\\[3pt]
   \small
-  \href{tel:+989120982276}{(+98) 912 098 2276} \,|\, \href{mailto:m@tyyi.net}{m@tyyi.net} \, \,|\, \href{https://www.tyyi.net}{www.tyyi.net} \,|\, \href{https://github.com/tayyebi}{github.com/tayyebi} \\
+  \href{tel:+989120982276}{(+98) 912 098 2276} \,|\, 
+  \href{mailto:m@tyyi.net}{m@tyyi.net} \,|\, 
+  \href{https://www.tyyi.net}{www.tyyi.net} \,|\, 
+  \href{https://github.com/tayyebi}{github.com/tayyebi} \\
   Address: No 5, Bashiri, Vali-asr, Tehran, Iran
 \end{center}
 
+% =========================================================
 % SUMMARY
+% =========================================================
+
 \begin{cvsection}{Summary}
 \end{cvsection}
 
 \noindent
 World Champion, National Medalist, Competitve Software Developer and Engineer with 10+ years of experience designing, building, and operating complex software systems across cloud infrastructure, SaaS, fintech, marketplaces, and IoT. Combines hands-on engineering expertise with business analysis, systems architecture, and product strategy, taking projects from early-stage requirements and architectural design through implementation, deployment, and production operations. Experienced in modernizing legacy systems, building scalable distributed architectures, automating business processes, and leading cross-functional engineering teams. Holds an MBA with a background in Computer Engineering, combining technical depth with business and organizational perspectives.
+
 \vspace{3pt}
 
+% =========================================================
 % SKILLS
+% =========================================================
+
 \begin{cvsection}{Skills}
-
 \end{cvsection}
-
 
 \begin{itemize}[leftmargin=0pt, label={}]
   \small
@@ -195,15 +241,17 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item \textbf{Project Management:} Business Analysis, Kanban, SWOT, MCDA, Work Breakdown Structures, Microsoft TFS, cost and timing control, quality testing
 \end{itemize}
 
+% =========================================================
 % EXPERIENCE
-\begin{cvsection}[ultramarine]{Experience}
+% =========================================================
 
+\begin{cvsection}{Experience}
 \end{cvsection}
-
 
 \begin{highlightedentries}
 
 \jobrole{Sr. Full-Stack Software Engineer (Full-time, On-site)}{\href{https://www.cloudzy.com/}{Cloudzy AI LLC}, Cloud VPS Provider since 2008 hosting 60K+ instances in more than 9 data-centers world-wide}{2018 -- Nov 2024}
+
 \Needspace{5\baselineskip}
 \textbf{Uptime Service}
 \begin{itemize}[leftmargin=0.3in]
@@ -212,18 +260,21 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Built active-active, masterless multi-region replication with auto-provisioning.
   \item Built Cloudflare Workers for routing, load balancing, and status pages.
 \end{itemize}
+
 \Needspace{3\baselineskip}
 \textbf{Billing System}
 \begin{itemize}[leftmargin=0.3in]
   \item Refactored and cleaned up the billing system architecture, reducing production incidents, cutting technical debt, and improving long-term backend reliability.
   \item Designed a legacy replacement with GDPR and IFRS compliance.
 \end{itemize}
+
 \Needspace{3\baselineskip}
 \textbf{Mailserver}
 \begin{itemize}[leftmargin=0.3in]
   \item Built and operated a scalable multi-region email platform with Grafana-based observability for latency, bounces, and throughput.
   \item Automated RFC 5965 abuse handling.
 \end{itemize}
+
 \Needspace{4\baselineskip}
 \textbf{Main Website}
 \begin{itemize}[leftmargin=0.3in]
@@ -232,6 +283,7 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Implemented staging and production proxy rules, scaling, load balancing, and access control using an Elementor child theme and snippets.
   \item Automated SEO tests with Google Apps Script; built CI/CD for multi-regional replication; implemented a self-hosted comment spam detection system and a single-binary optimizer for static files at the edge.
 \end{itemize}
+
 \Needspace{3\baselineskip}
 \textbf{General Tasks}
 \begin{itemize}[leftmargin=0.3in]
@@ -302,13 +354,14 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Repaired and maintained office PCs and other IT equipment.
 \end{itemize}
 
-% VOLUNTEER
 \end{highlightedentries}
 
-\begin{cvsection}[ultramarine]{Volunteer}
+% =========================================================
+% VOLUNTEER
+% =========================================================
 
+\begin{cvsection}{Volunteer}
 \end{cvsection}
-
 
 \begin{highlightedentries}
 
@@ -318,7 +371,7 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Containerized the solution with Docker on DigitalOcean behind a Dockerized Nginx reverse proxy, maximizing use of cloud server resources.
   \item Reorganized project architecture to align code structure with work breakdown structures, saving 2 weeks of training per new volunteer and nearly 1 out of every 6 hours of daily task clearance.
   \item Co-led, interviewed, and trained a team of 12 volunteer programmers and content developers across time zones, nationalities, and proficiency levels.
-  \Needspace{3\baselineskip}%
+  \Needspace{3\baselineskip}
   \item Implemented tools and workflows for technical documentation, teamwork, and DevOps; standardized documentation; back-end in Python, front-end in PHP.
 \end{itemize}
 
@@ -329,11 +382,13 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Designed and delivered crash courses on mental health.
 \end{itemize}
 
-% TEACHING
 \end{highlightedentries}
 
-\begin{cvsection}{Teaching}
+% =========================================================
+% TEACHING
+% =========================================================
 
+\begin{cvsection}{Teaching}
 \end{cvsection}
 
 \begin{highlightedentries}
@@ -361,12 +416,12 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 
 \end{highlightedentries}
 
+% =========================================================
 % PROJECTS
+% =========================================================
+
 \begin{cvsection}{Projects}
-
 \end{cvsection}
-
-
 
 \project{\href{https://github.com/tayyebi/mailserver}{Mailserver}}{A fully self-hosted, single-container mail server (Rust, Postfix, Dovecot, OpenDKIM) with an admin dashboard, webmail, DKIM/DMARC tooling, CalDAV/CardDAV sync, and an MCP API for AI-assistant integration.}{2024 -- Present}
 
@@ -382,12 +437,12 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 
 \project{\href{https://github.com/tayyebi/TehranStocks}{TehranStocks}}{A C\#/.NET service that fetches and organizes public market data from the Tehran Stock Exchange (TSETMC).}{2021 -- Present}
 
+% =========================================================
 % PUBLICATIONS
+% =========================================================
+
 \begin{cvsection}{Publications}
-
 \end{cvsection}
-
-
 
 \publication{\href{https://tayyebi.github.io/devops-book/}{Department of Information Technology and other magics}}{Open-source book (in progress): a professional guide to installing IT infrastructure and organizing teams.}{Book}
 
@@ -395,14 +450,12 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 
 \publication{\href{https://quantumengineering.ir}{QuantumEngineering.ir}}{A practical path from classical software engineering to quantum computing, quantum information, and research.}{Website}
 
-
-
+% =========================================================
 % EDUCATION
+% =========================================================
+
 \begin{cvsection}{Education}
-
 \end{cvsection}
-
-
 
 \compactrole{Master of Business Administration (MBA)}{\href{https://www.kntu.ac.ir}{Khaje Nasir Toosi University of Technology}, Tehran, Iran. Minor in Marketing Management.}{Oct 2021 -- Jul 2023}
 
@@ -410,12 +463,12 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 
 \compactrole{Diploma in Mathematics and Physics}{Madani High School, Hamedan, Iran}{Sep 2013 -- Aug 2018}
 
+% =========================================================
 % HONORS & AWARDS
+% =========================================================
+
 \begin{cvsection}{Honors \& Awards}
-
 \end{cvsection}
-
-
 
 \compactrole{\href{https://www.credly.com/badges/4333ef3c-2cf8-43f3-a102-33ffb50ba6f2/public_url}{WorldSkills 2017}, Abu Dhabi}{Champion, National Gold Medalist (IT -- Software Solutions for Business). Some records list this result as ranked 20th.}{2017}
 \begin{itemize}
@@ -430,12 +483,12 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
   \item Implemented a centralized authentication and authorization system at age 17.
 \end{itemize}
 
+% =========================================================
 % ARTS
+% =========================================================
+
 \begin{cvsection}{Arts}
-
 \end{cvsection}
-
-
 
 \compactrole{Music Awards}{With Ayeen Ensemble}{2017}
 \begin{itemize}
@@ -447,16 +500,16 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 
 \compactrole{Kanun Player}{Alvand Orchestra}{2014 -- 2015}
 
+% =========================================================
 % CERTIFICATIONS
+% =========================================================
+
 \begin{cvsection}{Certifications}
-
 \end{cvsection}
-
-
 
 \compactrole{\href{https://www.linkedin.com/learning/certificates/10c24841aac6b0c139f4971a8efd6d10356dc105124e31fa10eb32aa14ce3392}{Data Analytics: Foundations}}{NASBA, LinkedIn Learning}{2023}
 
-\compactrole{\href{https://www.linkedin.com/learning/certificates/3d1e244d9234631a908175486d19855434634d7f61cec316326ba4eb269bb041}{Business Process Modeling}}{PMI, LinkedIn Learning}{2023}
+\compactrole{\href{https://www.linkedin.com/learning/certificates/3d1e244d9234631a908175486d19855434634d7f61cec316ba4eb269bb041}{Business Process Modeling}}{PMI, LinkedIn Learning}{2023}
 
 \compactrole{\href{https://www.linkedin.com/learning/certificates/51dd265ef63b58255245c8f7438549551c92d30031e81b9ad864ee6994e1f6e6}{Business Analysis Foundations}}{IIBA, LinkedIn Learning}{2023}
 
@@ -464,12 +517,12 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 
 \compactrole{Enterprise Web Development with ASP.NET}{TVTO, No. 90163030986}{2013}
 
-% SPEAKING
+% =========================================================
+% SPEAKING & CONFERENCES
+% =========================================================
+
 \begin{cvsection}{Speaking \& Conferences}
-
 \end{cvsection}
-
-
 
 \compactrole{Kazan, Russia}{IranSkills representative expert}{2018}
 
@@ -477,17 +530,21 @@ World Champion, National Medalist, Competitve Software Developer and Engineer wi
 
 \compactrole{Hamedan, Iran}{Special speaker as top researcher in a session with education system chairmen and teachers}{2015}
 
-% LANGUAGES & INTERESTS
+% =========================================================
+% LANGUAGES
+% =========================================================
+
 \begin{cvsection}{Languages}
-
 \end{cvsection}
-
 
 Persian (Native), English (Full professional proficiency), German (A2)
 
+% =========================================================
+% INTERESTS
+% =========================================================
+
 \begin{cvsection}{Interests}
 Cycling, night sky observation (Certified Night Sky Observer, Ibn-Sala Astronomy Center), robotics.
-
 \end{cvsection}
 
 \end{document}
