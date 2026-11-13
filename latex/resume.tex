@@ -1,680 +1,360 @@
+% !TEX program = xelatex
+% =====================================================================
+%  MohammadReza Tayyebi — ATS-friendly resume · Noto Sans
+%  Recommended: XeLaTeX (Overleaf: Menu ▸ Settings ▸ Compiler ▸ XeLaTeX)
+%  Also compiles with pdfLaTeX / LuaLaTeX (automatic font fallback).
+% =====================================================================
+\documentclass[10pt,letterpaper]{article}
 
-\documentclass[10pt,a4paper]{article}
-
-% =========================================================
-% 1. ENCODING & MICRO-TYPOGRAPHY
-% =========================================================
-
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{microtype}
-
-% Improve PDF text extraction
-\input{glyphtounicode}
-\pdfgentounicode=1
-
-% =========================================================
-% 2. LAYOUT & TYPOGRAPHY
-% =========================================================
-
-\usepackage[a4paper, left=0.6in, right=0.6in, top=0.5in, bottom=0.5in]{geometry}
-
+% ---------- page & paragraph layout ----------
+\usepackage[letterpaper,top=0.6in,bottom=0.6in,left=0.7in,right=0.7in]{geometry}
+\pagestyle{empty}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0pt}
-\linespread{1.18}
+\setlength{\emergencystretch}{3em}
+\raggedright
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\linespread{1.05}
 
-% Preserve original font choices
-\usepackage[sfdefault]{noto-sans}
-\usepackage{CormorantGaramond}
-\usepackage{charter}
-
-% =========================================================
-% 3. PACKAGES
-% =========================================================
-
-\usepackage{graphicx}
-\usepackage{xcolor}
-\usepackage{titlesec}
-\usepackage{enumitem}
-\usepackage{needspace}
-\usepackage{fontawesome}
-\usepackage[
-  hidelinks,
-  bookmarks=true,
-  bookmarksopen=true,
-  bookmarksnumbered=false,
-  pdfdisplaydoctitle=true,
-  pdflang={en-US}
-]{hyperref}
-
-% PDF metadata
-\hypersetup{
-  pdftitle={MohammadReza Tayyebi - Resume},
-  pdfauthor={MohammadReza Tayyebi},
-  pdfsubject={Technical Product Management and Software Engineering},
-  pdfkeywords={
-    Software Engineering,
-    Technical Product Management,
-    Full Stack Development,
-    Cloud Infrastructure,
-    Systems Architecture,
-    Business Analysis,
-    DevOps,
-    Product Strategy
+% ---------- font: Noto Sans (engine-agnostic) ----------
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \input{glyphtounicode}\pdfgentounicode=1
+  \usepackage{noto}
+  \renewcommand{\familydefault}{\sfdefault}
+\else
+  \usepackage{fontspec}
+  \defaultfontfeatures{Ligatures=TeX}
+  \IfFontExistsTF{Noto Sans}{%
+    \setmainfont{Noto Sans}%
+  }{%
+    \setmainfont{NotoSans}[
+      Extension      = .otf,
+      UprightFont    = *-Regular,
+      BoldFont       = *-Bold,
+      ItalicFont     = *-Italic,
+      BoldItalicFont = *-BoldItalic]%
   }
-}
+\fi
 
-% =========================================================
-% 4. COLORS & PAGE
-% =========================================================
-
+% ---------- palette ----------
+\usepackage{xcolor}
 \definecolor{ultramarine}{RGB}{0,32,96}
 \definecolor{marineblue}{RGB}{9,129,209}
 \definecolor{heritagered}{RGB}{147,19,20}
-\definecolor{cream}{HTML}{fefdfc}
+\definecolor{cream}{HTML}{FEFDFC}
+\pagecolor{cream}                      % comment out for pure white
 
-\pagecolor{cream}
+% ---------- bullets ----------
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=1.2em, itemsep=1pt, topsep=3pt,
+  parsep=0pt, partopsep=0pt, label=\textcolor{marineblue}{\textbullet}}
 
-% External-link icon
-\let\orighref\href
-\renewcommand{\href}[2]{%
-  \orighref{#1}{#2\,{\textsuperscript{\tiny{\textcolor{heritagered}{\faExternalLink}}}}}%
-}
-
-% =========================================================
-% 5. TABLE / HEADER GAPS
-% =========================================================
-
-\setlength{\tabcolsep}{0in}
-\setlength{\headheight}{12pt}
-\setlength{\headsep}{6pt}
-\setlength{\footskip}{12pt}
-
-% =========================================================
-% 6. SPACING & LIST DEFAULTS
-% =========================================================
-
-\newlength{\ListLeftMargin}
-\setlength{\ListLeftMargin}{0.15in}
-
-\newlength{\ListTopSep}
-\setlength{\ListTopSep}{0pt}
-
-\newlength{\ListItemSep}
-\setlength{\ListItemSep}{3pt}
-
-\newlength{\ListParsep}
-\setlength{\ListParsep}{0pt}
-
-\newlength{\SectionBefore}
-\setlength{\SectionBefore}{6pt}
-
-\newlength{\SectionAfter}
-\setlength{\SectionAfter}{6pt}
-
-\newlength{\RoleEntrySpacing}
-\setlength{\RoleEntrySpacing}{12pt}
-
-\setlist[itemize]{
-  leftmargin=\ListLeftMargin,
-  topsep=\ListTopSep,
-  itemsep=\ListItemSep,
-  parsep=\ListParsep,
-  label=\textbullet,
-  before={\interlinepenalty=10000\relax}
-}
-
-% =========================================================
-% 7. SEMANTIC DOCUMENT HIERARCHY
-%
-% PDF outline:
-% Level 1: Main CV sections
-% Level 2: Employers, projects, institutions, etc.
-% Level 3: Subprojects and organizational components
-%
-% Bookmarks are independent of visible typography.
-% =========================================================
-
-\newcounter{cvsection}
-\newcounter{cvbookmark}
-
-% Level 1: Main section
-\newcommand{\cvsection}[1]{%
-  \par
-  \refstepcounter{cvsection}%
-  \pdfbookmark[1]{#1}{cv.section.\thecvsection}%
-  \section*{#1}%
-}
-
-% Level 2: Individual entity
-\newcommand{\cvbookmark}[2][2]{%
-  \refstepcounter{cvbookmark}%
-  \pdfbookmark[#1]{#2}{cv.entry.\thecvbookmark}%
-}
-
-% Level 3: Subcomponent
-\newcommand{\cvsubbookmark}[1]{%
-  \cvbookmark[3]{#1}%
-}
-
-% Visible section styling
+% ---------- section headings (real \section = outline + bookmarks) ----------
+\usepackage{titlesec}
+\setcounter{secnumdepth}{0}
 \titleformat{\section}
-  {\raggedright\normalsize\color{ultramarine}}
-  {}{0em}
-  {\Needspace{6\baselineskip}}
-  [\color{marineblue}\titlerule]
+  {\normalfont\large\bfseries\color{ultramarine}}{}{0pt}{\MakeUppercase}
+  [\vspace{2pt}{\color{marineblue}\titlerule[0.6pt]}]
+\titlespacing*{\section}{0pt}{9pt plus 2pt minus 2pt}{4pt}
 
-\titlespacing*{\section}{0pt}{\SectionBefore}{\SectionAfter}
-
-% =========================================================
-% 8. ENTRY COMPONENTS
-% =========================================================
-
-\newcommand{\deemph}[1]{{\color{gray}#1}}
-
-\newif\ifhighlightedentries
-\newif\iffirsthighlightedentry
-
-\newenvironment{highlightedentries}{%
-  \global\highlightedentriestrue
-  \global\firsthighlightedentrytrue
-}{%
-  \global\highlightedentriesfalse
+% ---------- links, URLs, PDF metadata & outline ----------
+\usepackage{microtype}
+\usepackage{xurl}
+\usepackage{hyperref}                  % keep last
+\hypersetup{
+  unicode=true, colorlinks=true,
+  urlcolor=marineblue, linkcolor=ultramarine, citecolor=ultramarine,
+  bookmarks=true, bookmarksopen=true, bookmarksopenlevel=1,
+  bookmarksnumbered=false, pdfstartview=FitH, pdfdisplaydoctitle=true,
+  pdflang={en-US},
+  pdftitle={MohammadReza Tayyebi - Resume},
+  pdfauthor={MohammadReza Tayyebi},
+  pdfsubject={Technical Product Manager and Software Engineer},
+  pdfkeywords={C\#, ASP.NET Core, PHP, Laravel, SQL Server, MySQL, Linux, Docker,
+    Nginx, distributed systems, IoT, business analysis, product management, MBA}
 }
+\urlstyle{same}
 
-\makeatletter
+% ---------- helpers ----------
+\newcommand{\deemph}[1]{\textcolor{gray}{#1}}
+\newcommand{\sep}{\ \deemph{\textbar}\ }
 
-\def\roleorgA#1,#2\@nil{%
-  {\noindent\normalsize\bfseries\color{black}#1\par}%
-  \if\relax\detokenize{#2}\relax
-  \else
-    {\noindent\fontsize{9pt}{10.5pt}\selectfont\deemph{#2}\par}%
-  \fi
-}
+% ↗ as a superscript marker (heritage red)
+\newcommand{\linkarrow}{\textsuperscript{\textcolor{heritagered}{$\nearrow$}}}
+\newcommand{\extlink}[2]{\href{#1}{#2}\nobreak\linkarrow}
 
-\def\roleorg#1{\roleorgA#1,\@nil}
+\newcounter{entrybm}
+% \entry{Role}{Organisation}{Location / mode}{Dates}
+\newcommand{\entry}[4]{%
+  \par\addvspace{6pt}%
+  \stepcounter{entrybm}%
+  \pdfbookmark[1]{#1 — #2}{entry\theentrybm}%
+  {\bfseries\color{ultramarine}#1}\hfill\deemph{#4}\par\nobreak
+  {\color{marineblue}#2}\hfill\deemph{#3}\par\nobreak
+  \vspace{1pt}}
 
-\makeatother
+\newcounter{briefbm}
+% \brief{Title}{Context / stack}{Dates}{One-paragraph detail (may be empty)}
+\newcommand{\brief}[4]{%
+  \par\addvspace{5pt}%
+  \stepcounter{briefbm}%
+  \pdfbookmark[1]{#1}{brief\thebriefbm}%
+  {\bfseries\color{ultramarine}#1} \deemph{· #2}\hfill\deemph{#3}\par\nobreak
+  #4\par}
 
-% Full entry: title, organization, dates, title color
-\newcommand{\roleentry}[4]{%
-  \ifhighlightedentries
-    \iffirsthighlightedentry
-      \global\firsthighlightedentryfalse
-    \else
-      \addvspace{\RoleEntrySpacing}%
-    \fi
-  \fi
-  \Needspace{8\baselineskip}%
-  {\noindent\normalsize\bfseries\textcolor{#4}{#1}\hfill
-   \textit{\fontsize{9pt}{10.5pt}\selectfont
-   \deemph{\textcolor{marineblue}{#3}}}\par}%
-  \vspace{1pt}\roleorg{#2}%
-}
+\newcommand{\lineentry}[2]{\par\addvspace{3pt}{\bfseries #1}\hfill\deemph{#2}\par}
+\newcommand{\skill}[2]{\par\addvspace{2pt}\textbf{#1:} #2\par}
 
-\newcommand{\role}[3]{\roleentry{#1}{#2}{#3}{black}}
-\newcommand{\jobrole}[3]{\roleentry{#1}{#2}{#3}{ultramarine}}
-
-% Compact entry
-\newcommand{\compactrole}[3]{%
-  \Needspace{3\baselineskip}%
-  {\noindent\normalsize\bfseries\color{black}#1\hfill
-   \textit{\fontsize{9pt}{10.5pt}\selectfont
-   \deemph{\textcolor{marineblue}{#3}}}\par}%
-  {\noindent\fontsize{9pt}{10.5pt}\selectfont\deemph{#2}\par}%
-}
-
-% Project: name, description, dates
-\newcommand{\project}[3]{%
-  \Needspace{4\baselineskip}%
-  \noindent\textbf{#1}\hfill
-  \textit{\small\deemph{\textcolor{marineblue}{#3}}}\\%
-  \noindent\small\deemph{#2}\par\vspace{2pt}%
-}
-
-% Publication: title, description, status
-\newcommand{\publication}[3]{%
-  \Needspace{3\baselineskip}%
-  {\noindent\normalsize\bfseries\color{black}#1\hfill
-   \textit{\fontsize{9pt}{10.5pt}\selectfont
-   \deemph{\textcolor{marineblue}{#3}}}\par}%
-  {\noindent\fontsize{9pt}{10.5pt}\selectfont\deemph{#2}\par}%
-}
-
-% =========================================================
-% 9. PAGE NUMBERING
-% =========================================================
-
-\pagenumbering{gobble}
-
-% =========================================================
-% 10. DOCUMENT
-% =========================================================
-
+% =====================================================================
 \begin{document}
 
-\raggedright
-\vspace*{6pt}
+% ---------- HEADER ----------
+{\fontsize{22}{24}\selectfont\bfseries\color{ultramarine}MohammadReza Tayyebi}\par
+\vspace{2pt}
+{\large\color{marineblue}Software Engineer \& MBA}\par
+\vspace{5pt}
+Tehran, Iran \sep
+\href{tel:+989120982276}{(+98) 912 098 2276} \sep
+\href{mailto:m@tyyi.net}{m@tyyi.net}\sep
+\extlink{https://www.tyyi.net}{www.tyyi.net}\sep
+\extlink{https://github.com/tayyebi}{github.com/tayyebi}\par
 
-% =========================================================
-% HEADER
-% =========================================================
+% ---------- SUMMARY ----------
+\section{Summary}
+WorldSkills Champion and Khwarizmi Award winner with a background in Computer Engineering and an MBA in Marketing. Software engineering experience across cloud infrastructure, multi-tenant SaaS, fintech, and IoT.
 
-\begin{center}
-  {\Large\bfseries\textcolor{ultramarine}{MohammadReza Tayyebi}}\\[3pt]
-  {\normalsize\bfseries Technical Product Manager \& Software Engineer}\\[3pt]
-  \small
-  \href{tel:+989120982276}{(+98) 912 098 2276} \,|\, 
-  \href{mailto:m@tyyi.net}{m@tyyi.net} \,|\, 
-  \href{https://www.tyyi.net}{www.tyyi.net} \,|\, 
-  \href{https://github.com/tayyebi}{github.com/tayyebi}\\
-  Address: No 5, Bashiri, Vali-asr, Tehran, Iran
-\end{center}
+Works across the software architecture lifecycle, from requirements analysis and system design to implementation, deployment, and production operations. Experience includes database and infrastructure architecture, legacy system modernization, distributed systems, technical consulting, and translating business requirements into technical solutions.
 
-% =========================================================
-% SUMMARY
-% =========================================================
+% ---------- SKILLS ----------
+\section{Skills}
+\skill{Languages}{C\#, PHP, TypeScript}
+\skill{Web \& Frameworks}{ASP.NET Core, Node.JS, Laravel, WordPress}
+\skill{Desktop \& Mobile}{Windows Forms, WPF, Qt, Xamarin, Java (Android)}
+\skill{Databases}{SQL Server, MySQL, PostgreSQL, SQLite, Entity Framework 6}
+\skill{DevOps \& Infrastructure}{Linux (Ubuntu, Debian), Docker, Nginx, Amazon S3, CI/CD, Git, Cloudflare CDN, SMTP, KMS, FTP, monitoring, Qemu/KVM, VirtualBox}
+\skill{Architecture \& Analysis}{UML, ERD and normalization, data flow diagrams, multi-tier and domain-driven design, design patterns, security and controls design, UX design}
+\skill{Product \& Project}{Business analysis, Kanban, SWOT, MCDA, work breakdown structures, Microsoft Team Foundation Server, cost and timing control, quality testing}
 
-\cvsection{Summary}
+% ---------- EXPERIENCE ----------
+\section{Experience}
 
-\noindent
-World Champion, National Medalist, Competitive Software Developer and Engineer with 10+ years of experience designing, building, and operating complex software systems across cloud infrastructure, SaaS, fintech, marketplaces, and IoT. Combines hands-on engineering expertise with business analysis, systems architecture, and product strategy, taking projects from early-stage requirements and architectural design through implementation, deployment, and production operations. Experienced in modernizing legacy systems, building scalable distributed architectures, automating business processes, and leading cross-functional engineering teams. Holds an MBA with a background in Computer Engineering, combining technical depth with business and organizational perspectives.
-
-\vspace{3pt}
-
-% =========================================================
-% SKILLS
-% =========================================================
-
-\cvsection{Skills}
-
-\begin{itemize}[leftmargin=0pt, label={}]
-  \small
-
-  \item \textbf{Languages \& Frameworks:} C\#, C++ (11/14), PHP, Laravel, JavaScript, Vanilla JS, TypeScript, Node.js, React, Python (TensorFlow), Java (Android), Kotlin, Dart (basic), GoLang (basic)
-
-  \item \textbf{Web \& Desktop:} HTML5, CSS3, jQuery, ASP.NET Core 3, ASP.NET MVC, ASP.NET Web Forms, ASP.NET Web API, WCF, WordPress, WooCommerce, Windows Forms, WPF, Qt, Xamarin, Flutter (basic), React Native (basic)
-
-  \item \textbf{Databases:} SQL Server, MySQL, MongoDB (basic), SQLite, Entity Framework 6
-
-  \item \textbf{DevOps \& Infrastructure:} Linux (Ubuntu, Debian), Windows Server, Docker, Nginx, DigitalOcean, S3, CI/CD, Git, CDN, SMTP, KMS, FTP, monitoring, VirtualBox
-
-  \item \textbf{Architecture \& Analysis:} UML, ERD and normalization, data flow diagrams, multi-tier and domain-driven design, design patterns, BI and executive dashboards, data warehousing, security and controls design, UX and interface design
-
-  \item \textbf{Project Management:} Business Analysis, Kanban, SWOT, MCDA, Work Breakdown Structures, Microsoft TFS, cost and timing control, quality testing
-\end{itemize}
-
-% =========================================================
-% EXPERIENCE
-% =========================================================
-
-\cvsection{Experience}
-
-\begin{highlightedentries}
-
-% CLOUDZY
-\cvbookmark{Cloudzy AI LLC — Senior Full-Stack Software Engineer}
-
-\jobrole{Sr. Full-Stack Software Engineer (Full-time, On-site)}{\href{https://www.cloudzy.com/}{Cloudzy AI LLC}, Cloud VPS Provider since 2008 hosting 60K+ instances in more than 9 data-centers world-wide}{2018 -- Nov 2024}
-
-\cvsubbookmark{Uptime Service}
-\Needspace{5\baselineskip}
-\textbf{Uptime Service}
-\begin{itemize}[leftmargin=0.3in]
-  \item Designed a multi-tenant architecture allowing tenants to define groups and services, with subscription options to expose services externally.
-  \item Supported multiple protocols and conditional checks for service monitoring and grouping.
-  \item Built active-active, masterless multi-region replication with auto-provisioning.
-  \item Built Cloudflare Workers for routing, load balancing, and status pages.
-\end{itemize}
-
-\cvsubbookmark{Billing System}
-\Needspace{3\baselineskip}
-\textbf{Billing System}
-\begin{itemize}[leftmargin=0.3in]
-  \item Refactored and cleaned up the billing system architecture, reducing production incidents, cutting technical debt, and improving long-term backend reliability.
-  \item Designed a legacy replacement with GDPR and IFRS compliance.
-\end{itemize}
-
-\cvsubbookmark{Mailserver}
-\Needspace{3\baselineskip}
-\textbf{Mailserver}
-\begin{itemize}[leftmargin=0.3in]
-  \item Built and operated a scalable multi-region email platform with Grafana-based observability for latency, bounces, and throughput.
-  \item Automated RFC 5965 abuse handling.
-\end{itemize}
-
-\cvsubbookmark{Main Website}
-\Needspace{4\baselineskip}
-\textbf{Main Website}
-\begin{itemize}[leftmargin=0.3in]
-  \item Unified multiple legacy websites into one application, removing duplicate infrastructure and content-management overhead.
-  \item Built custom WordPress plugins and Elementor widgets, consolidating dozens of plugins into one solution.
-  \item Implemented staging and production proxy rules, scaling, load balancing, and access control using an Elementor child theme and snippets.
-  \item Automated SEO tests with Google Apps Script; built CI/CD for multi-regional replication; implemented a self-hosted comment spam detection system and a single-binary optimizer for static files at the edge.
-\end{itemize}
-
-\cvsubbookmark{General Tasks}
-\Needspace{3\baselineskip}
-\textbf{General Tasks}
-\begin{itemize}[leftmargin=0.3in]
-  \item Reverse-engineered Cloudflare rules; delivered MVPs for a shared-hosting platform, Billing as a Service, an Applicant Tracking System, Core Web Vitals monitoring, Live Chat with AI, a Marketing Automation Platform, a Spam Detection System, and a Developer CLI.
-\end{itemize}
-
-% ARG GROUP
-\cvbookmark{Arg Group — Founder and Software Engineer}
-
-\jobrole{Founder \& Software Engineer (Full-time, On-site)}{\href{https://www.gordarg.com/}{Arg Group}, Design and development of custom-built software solutions}{2018 -- Nov 2024}
+\entry{Senior Software Engineer}{Cloudzy AI LLC}{Tehran, Iran · On-site}{Nov 2024 -- Present}
+\deemph{Cloud VPS provider since 2008: Tens of thousands of active customers across 9+ data centers worldwide.}\par
 \begin{itemize}
-  \item Founded the company and led a team of 3 to 5 engineers delivering software and integration services to 50+ clients across various industries.
-  \item \href{https://gordarg.com}{Gordarg.com} oversees subsidiaries such as a data aggregation service and several mobile applications, all accessible through the website.
-  \item Delivered key projects with significant personal contributions, recognized through numerous recommendation letters from satisfied customers.
+  \item \textbf{Uptime service:} multi-tenant architecture with tenant-defined groups and services,
+        subscription-based external exposure, multi-protocol conditional checks, active-active
+        masterless multi-region replication with auto-provisioning, and Cloudflare Workers for
+        routing, load balancing, and status pages.
+  \item \textbf{Billing:} refactored the billing architecture to reduce production incidents and
+        technical debt; designed the legacy replacement with GDPR and IFRS compliance.
+  \item \textbf{Mail server:} built and operated a scalable multi-region email platform with Grafana
+        observability for latency, bounces, and throughput; automated RFC 5965 abuse handling.
+  \item \textbf{Web platform:} unified legacy websites into one application; built custom WordPress
+        plugins and Elementor widgets replacing dozens of plugins; implemented staging/production
+        proxy rules, scaling, load balancing, and access control.
+  \item \textbf{Automation \& MVPs:} SEO tests in Google Apps Script, CI/CD for multi-region
+        replication, self-hosted comment-spam detection, single-binary static-file optimizer at the
+        edge; MVPs for shared hosting, Billing as a Service, an Applicant Tracking System, Core Web
+        Vitals monitoring, AI live chat, marketing automation, and a developer CLI.
 \end{itemize}
 
-% ZOOMILA
-\cvbookmark{Zoomila — Software Engineer}
-
-\jobrole{Software Engineer (On-site)}{\href{https://zoomila.com}{Zoomila}, Real estate property portal}{Feb 2023 -- Aug 2023}
+\entry{Founder, Director \& Software Engineer}{Arg Group}{Hamedan, Iran · On-site}{2018 -- Nov 2024}
+\deemph{Custom-built software solutions and integration services.}\par
 \begin{itemize}
-  \item Performed transformation and refactoring of the main web application, serving thousands of daily users, enabling the team to replace retired technologies.
-  \item Limited forced downtime to fewer than 10 incidents over six months, with the longest lasting only 15 minutes.
-  \item Configured Linux servers and managed migration; wrote SH, SQL, and PHP scripts to discover abandoned software functions and database tables.
-  \item Broke a large legacy codebase into several maintainable containers, removing the main bottleneck in the team's refactoring effort.
+  \item Founded the company and led 3--5 engineers delivering software and integration services to
+        50+ clients across industries; recognized through numerous client recommendation letters.
+  \item Built \extlink{https://gordarg.com}{Gordarg.com} as the umbrella for subsidiaries, including a data-aggregation service.
 \end{itemize}
 
-% PLOMPIN
-\cvbookmark{Plompin Sanat — Software Developer}
-
-\jobrole{Software Developer (Hybrid)}{\href{https://plompin.com}{Plompin Sanat}, Designer and manufacturer of security seals}{Jan 2018 -- Jan 2023}
+\entry{Software Engineer}{Zoomila}{Hamedan, Iran · On-site}{Feb 2023 -- Aug 2023}
+\deemph{Leading real estate property portal at the time with \#1 Google Search rank on most queries.}\par
 \begin{itemize}
-  \item Redesigned and maintained a network-based desktop application for 4 manufacturing and 2 packaging lines, tracking each of 1 million industrial seal pieces per month from assembly to packaging.
-  \item Ran under heavy load for more than 5 years, handling high-frequency transactions and real-time monitoring reports on Microsoft SQL Server.
+  \item Refactored and transformed the main web application serving thousands of daily users,
+        enabling the team to retire obsolete technologies; split a large legacy codebase into
+        maintainable containers, removing the team's main refactoring bottleneck.
+  \item Limited forced downtime to fewer than 10 incidents over six months, the longest 15 minutes.
+  \item Configured Linux servers and managed migration; wrote Bash, SQL, and PHP scripts to discover abandoned software functions and database tables.
 \end{itemize}
 
-% HAMTIRE
-\cvbookmark{Tokan Tav Tejarat (Hamtire) — Team Lead}
-
-\jobrole{Team-Lead (Full-time, On-site)}{\href{https://hamtire.com}{Tokan Tav Tejarat (Hamtire)}, Trading company and B2B marketplace for tires and wheels, Hamedan, Iran}{Jun 2022 -- Dec 2022}
+\entry{Software Architect}{Sazeh Taban Sepahan (TabaPay)}{Isfahan, Iran · Remote}{Jan 2023 -- Present}
+\deemph{Fintech company specializing in digital payments, tax services, and financial transactions.}\par
 \begin{itemize}
-  \item Established a clean Laravel codebase for the Hamtire marketplace, designing the database and APIs for scalability and the company's three-year growth plan.
-  \item Developed a Laravel API and scaffolding scripts used as the base for new marketplace features.
-  \item Led architecture and design of the e-commerce application and the international commerce team; implemented a Knowledge Management System.
-  \item Launched and maintained production and development infrastructure (Git, CDN, SMTP, KMS, workflow, FTP, monitoring, and database servers).
-  \item Coached a cross-functional team (Ionic/ReactJS, web, PHP back-end, SEO, and content); responsible for task delegation, cost management, timing, quality tests, and product-market fit.
-  \item Automated data-gathering processes and contributed to solutions for importing heavy-vehicle tires.
+  \item Advised on database architecture and led its redesign to align with industry-standard accounting principles and financial reporting requirements.
+  \item Consulted on the strategic adjustment and distribution of services and infrastructure to improve the overall system architecture and deployment topology.
 \end{itemize}
 
-% MR BILIT
-\cvbookmark{Mr. Bilit Group — PHP and ASP.NET Developer}
-
-\jobrole{PHP \& ASP.NET Core C\# Developer (Full-time, Remote)}{Mr. Bilit Group, Travel search and booking (\href{https://mrbilit.ir}{MrBilit.ir}, MrBilit Charter Flights, \href{https://irangard.com}{IranGard.com}), Isfahan, Iran}{Jan 2021 -- May 2021}
+\entry{Web Developer}{Parande Baran Pars}{Hamedan, Iran · Part-time On-site}{2019 -- 2024}
+\deemph{Manufacturer and designer of irrigation supplies.}\par
 \begin{itemize}
-  \item Supported the first integrated travel search system, covering airline, train, and bus reservations and other tourist services.
-  \item Refactored and rewrote code from the legacy PHP stack to the company's domain-driven ASP.NET Core C\# stack, keeping the system that synchronized hundreds of thousands of bus and plane seat statuses up to date.
-  \item Developed APIs and bots that keep databases in sync and serve up-to-date data to hundreds of thousands of human and bot users; handled hundreds of thousands of simultaneous network and database operations.
-  \item Implemented RESTful APIs for business logic and participated in API and database development across multiple languages.
+  \item Developed a message broker and APIs to connect internal company databases to store-front website.
 \end{itemize}
 
-% ATINET
-\cvbookmark{AtiNet — Software Developer}
-
-\jobrole{Software Developer (Full-time, On-site)}{\href{https://atinet.ir}{AtiNet}, First Internet Service Provider (ISP) in western Iran, with IoT projects}{2018 -- 2021}
+\entry{Software Engineer}{Plompin Sanat}{Hamedan, Iran · Part-time On-site}{Jan 2018 -- Jan 2023}
+\deemph{Manufacturer of security seals.}\par
 \begin{itemize}
-  \item Developed server-side IoT software storing and forwarding hundreds of thousands of network requests per day from hundreds of sensors, using MySQL, PHP, and GoLang.
-  \item The software has run under heavy load since 2019 with no major changes and almost no incidents since release.
-  \item Project Manager for AtiNet Sina Parsian (2018 -- 2019, NDA); still providing support.
+  \item Redesigned and maintained a networked desktop application for 4 manufacturing and 2 packaging
+        lines, tracking 1 million industrial seals per month from assembly to packaging.
+  \item Ran under heavy load for 5+ years with high-frequency transactions and real-time monitoring
+        reports on Microsoft SQL Server.
 \end{itemize}
 
-% RAYAN
-\cvbookmark{Rayan Electronic Andish Hegmataneh — Software Engineer}
-
-\jobrole{Software Engineer (Part-time, Hybrid)}{Rayan Electronic Andish Hegmataneh}{2018 -- 2019}
+\entry{Software Engineer \& Team Lead}{Tokan Tav Tejarat (Hamtire)}{Hamedan, Iran · On-site}{Jun 2022 -- Dec 2022}
+\deemph{Trading company and B2B marketplace for tires and wheels.}\par
 \begin{itemize}
-  \item Implemented GPS back-end, web, and mobile front-end.
+  \item Established a clean Laravel codebase, database, and APIs sized for the company's three-year
+        growth plan; wrote scaffolding scripts used as the base for new marketplace features.
+  \item Led architecture and design of the e-commerce application and the international commerce
+        team; implemented a Knowledge Management System and automated data gathering for
+        heavy-vehicle tire imports.
+  \item Launched and maintained production and development infrastructure (Git, CDN, SMTP, KMS,
+        workflow, FTP, monitoring, database servers); coached a cross-functional team
+        (Ionic/ReactJS, web, PHP, SEO, content) and owned delegation, cost, timing, quality tests,
+        and product-market fit.
 \end{itemize}
 
-% FREELANCE
-\cvbookmark{Freelance and Independent Software Development}
-
-\jobrole{Software Developer}{Freelancer \& Independent Contractor, Custom software design, IoT and sensor networks, business websites}{2012 -- Nov 2024}
+\entry{Software Engineer}{Mr. Bilit Group}{Isfahan, Iran · Remote}{Jan 2021 -- May 2021}
+\deemph{Travel search and booking: MrBilit.ir, MrBilit Charter Flights, IranGard.com.}\par
 \begin{itemize}
-  \item Served 50+ legal and individual customers, from interface design to BI reporting.
-  \item Developed 3 IoT and sensor network projects (back-end and sockets) with electronics and robotics engineers, plus 15+ desktop and 30+ web applications.
-  \item Business analysis and database design; server configuration and tuning. Recommended by 10+ customers and managers.
+  \item Rewrote the legacy PHP stack into the company's domain-driven ASP.NET Core C\# stack,
+        supporting the first integrated travel search system for airline, train, and bus reservations.
+  \item Participated in refactoring of RESTful APIs and services keeping hundreds of thousands of seat statuses in sync and
+        serving hundreds of thousands of human and bot users under heavy concurrent load.
 \end{itemize}
 
-% NASHR
-\cvbookmark{Nashr-e-Roozandish — IT and Website Administration}
-
-\jobrole{IT Man \& Website Administrator (Full-time, On-site)}{Nashr-e-Roozandish}{Summer 2012}
+\entry{Software Engineer}{AtiNet}{Hamedan, Iran · On-site}{2018 -- 2021}
+\deemph{First ISP in western Iran, with IoT projects.}\par
 \begin{itemize}
-  \item Updated and maintained the company website content.
-  \item Repaired and maintained office PCs and other IT equipment.
+  \item Developed server-side IoT software storing and forwarding hundreds of thousands of network requests per day from hundreds of sensors using MySQL, PHP, and Go; in production under heavy load since 2019 with almost no incidents.
 \end{itemize}
 
-\end{highlightedentries}
-
-% =========================================================
-% VOLUNTEER
-% =========================================================
-
-\cvsection{Volunteer}
-
-\begin{highlightedentries}
-
-\cvbookmark{Universal Versatile Society — IT Consultant and Web Developer}
-
-\jobrole{IT Consultant \& Web Developer (Part-time, Remote)}{\href{https://uvsociety.org}{Universal Versatile Society} (UNEP \& UNCCD accredited NGO), Remote, India}{Jun 2022 -- Jun 2023}
+\entry{Software Engineer}{Rayan Electronic Andish Hegmataneh}{Hybrid}{2018 -- 2019}
+\deemph{Producer of vehicle GPS trackers.}\par
 \begin{itemize}
-  \item Built a multi-vendor marketplace for Indian farmers on a multi-tier RESTful architecture, customizing WordPress and WooCommerce with the least time and cost.
-  \item Containerized the solution with Docker on DigitalOcean behind a Dockerized Nginx reverse proxy, maximizing use of cloud server resources.
-  \item Reorganized project architecture to align code structure with work breakdown structures, saving 2 weeks of training per new volunteer and nearly 1 out of every 6 hours of daily task clearance.
-  \item Co-led, interviewed, and trained a team of 12 volunteer programmers and content developers across time zones, nationalities, and proficiency levels.
-  \Needspace{3\baselineskip}
-  \item Implemented tools and workflows for technical documentation, teamwork, and DevOps; standardized documentation; back-end in Python, front-end in PHP.
+  \item Implemented the GPS back-end with golang and the web and mobile front-ends with pure PHP and JS.
 \end{itemize}
 
-\cvbookmark{Sariab — Founder and Director}
+\entry{Web Developer}{Freelance / Independent Contractor}{Hamedan, Iran}{2012 -- Nov 2024}
+\deemph{Building websites for individuals and small businesses.}\par
 
-\jobrole{Founder \& Director (Part-time, Hybrid)}{Sariab, university project, Bu-Ali Sina University}{2018 -- 2020}
+\entry{Salesperson \& IT Technician}{Nashr-e-Roozandish}{Hamedan, Iran · On-site}{2011}
+\deemph{Publisher of educational books for university students.}\par
 \begin{itemize}
-  \item Founded and directed the project, setting its goals with mental health at the center.
-  \item Wrote code and content; hosted meetings and podcasts.
-  \item Designed and delivered crash courses on mental health.
+  \item Data entry and website content management.
+  \item Maintained office computers and other IT equipment.
 \end{itemize}
 
-\end{highlightedentries}
 
-% =========================================================
-% TEACHING
-% =========================================================
+% ---------- PROJECTS ----------
+\section{Projects}
 
-\cvsection{Teaching}
+\brief{Mailserver}{Rust, Postfix, Dovecot, OpenDKIM}{2024 -- Present}
+{Fully self-hosted, single-container mail server with admin dashboard, webmail, DKIM/DMARC tooling,
+ CalDAV/CardDAV sync, and an MCP API for AI-assistant integration.}
 
-\begin{highlightedentries}
+\brief{Agentless Monitor}{Elixir, Rust, SSH}{2025 -- Present}
+{Server monitoring dashboard tracking CPU, memory, disk, network, and port status across a fleet
+ with zero agent installs.}
 
-\cvbookmark{Bu-Ali Sina University — Instructor and Guest Lecturer}
+\brief{Laravel Docker Web Hosting}{Laravel 12, Docker, Nginx/Lua}{2023 -- Present}
+{Self-hosted hosting control panel provisioning isolated per-site container stacks (web, database,
+ phpMyAdmin, file manager) behind a reverse proxy.}
 
-\jobrole{Instructor / Guest Lecturer}{\href{https://www.basu.ac.ir}{Bu-Ali Sina University}, Scientific Society of Computer Science and Engineering}{2018 -- 2020}
+\brief{Deepr}{.NET, Blazor}{2025 -- Present}
+{Multi-agent decision-support API orchestrating AI and human councils through Delphi, NGT, ADKAR,
+ and weighted deliberation with SWOT/PESTLE analysis, producing ranked, exportable decisions.}
+
+\brief{Launchpad}{Android}{Present}
+{Persian-language productivity app with task management, a built-in timer, and a home-screen widget
+ showing task status.}
+
+\brief{Streaming}{Docker, Nginx-RTMP, stunnel}{2018 -- Present}
+{Guide and scripts for simulcasting a desktop or camera feed to multiple streaming destinations at once.}
+
+% ---------- VOLUNTEER ----------
+\section{Volunteer}
+
+\entry{IT Consultant \& Web Developer}{Universal Versatile Society}{Remote, India}{Jun 2022 -- Jun 2023}
+\deemph{UNEP \& UNCCD accredited NGO.}\par
 \begin{itemize}
-  \item Instructed the \href{https://github.com/tayyebi/BASU-Full-Stack-98}{Full-stack Developer} workshop and the \href{https://github.com/tayyebi/BASU-MVC-99}{Advanced MVC Design Pattern} crash course to familiarize students with industry standards.
-  \item Taught Full-Stack Programming in the Summer School of the Student Scientific Society of Computer Engineering (2019).
+  \item Built a multi-vendor marketplace for Indian farmers on a multi-tier RESTful architecture
+        (WordPress/WooCommerce; Python back-end, PHP front-end), containerized with Docker on
+        DigitalOcean behind a Dockerized Nginx reverse proxy.
+  \item Reorganized project architecture around work breakdown structures, saving 2 weeks of training
+        per new volunteer and nearly 1 in 6 hours of daily task clearance.
+  \item Co-led, interviewed, and trained 12 volunteer programmers and content developers across time
+        zones, nationalities, and proficiency levels; standardized documentation and DevOps workflows.
 \end{itemize}
 
-\cvbookmark{Iran Technical and Vocational Organization — Instructor}
+\brief{Founder \& Director}{Sariab · Bu-Ali Sina University}{2018 -- 2020}
+{University project centered on mental health: set goals, wrote code and content, hosted meetings and
+ podcasts, and designed and delivered crash courses.}
 
-\jobrole{Instructor}{Iran Technical and Vocational Organization / Khaje Nasir Institute, Hamedan, Iran}{2016 -- 2018}
-\begin{itemize}
-  \item Taught RESTful application development, ASP.NET Web Forms, WCF, WPF, Xamarin, Windows Forms, and SQL Server.
-\end{itemize}
+% ---------- TEACHING ----------
+\section{Teaching}
 
-\cvbookmark{Private Programming Tutor and Coach}
+\brief{Instructor / Guest Lecturer}{Bu-Ali Sina University · Scientific Society of CSE}{2018 -- 2020}
+{Full-stack Developer workshop, Advanced MVC Design Pattern crash course, and Full-Stack Programming
+ at the Student Scientific Society Summer School (2019).}
 
-\jobrole{Private Programming Tutor \& Coach}{Freelance, for several companies}{2012 -- Nov 2024}
-\begin{itemize}
-  \item Provided private programming tutoring and coaching.
-\end{itemize}
+\brief{Instructor}{Iran TVTO / Khaje Nasir Institute · Hamedan}{2016 -- 2018}
+{RESTful application development, ASP.NET Web Forms, WCF, WPF, Xamarin, Windows Forms, SQL Server.}
 
-\cvbookmark{Madani High School — Teacher}
+\brief{Teacher, ActionScript \& Game Design}{Madani High School · Hamedan}{Summer 2018}
+{Programming and game design with Adobe Flash CS5.}
 
-\jobrole{Teacher (ActionScript \& Game Design)}{Madani High School, Hamedan, Iran}{2013 -- 2018}
-\begin{itemize}
-  \item Taught ActionScript programming and game design with Adobe Flash CS5.
-\end{itemize}
+% ---------- EDUCATION ----------
+\section{Education}
 
-\end{highlightedentries}
+\entry{Master of Business Administration (MBA)}{Khaje Nasir Toosi University of Technology}{Tehran, Iran}{Oct 2021 -- Jul 2023}
+\deemph{Minor in Marketing Management.}\par
 
-% =========================================================
-% PROJECTS
-% =========================================================
+\entry{B.Sc. in Computer Engineering}{Bu-Ali Sina University}{Hamedan, Iran}{Mar 2016 -- Jul 2020}
+\deemph{Minor in Information Technology.}\par
 
-\cvsection{Projects}
+\lineentry{Diploma in Mathematics and Physics — Madani High School, Hamedan}{Sep 2013 -- Aug 2018}
 
-\cvbookmark{Mailserver — Rust-based Self-hosted Email Platform}
-\project{\href{https://github.com/tayyebi/mailserver}{Mailserver}}{A fully self-hosted, single-container mail server (Rust, Postfix, Dovecot, OpenDKIM) with an admin dashboard, webmail, DKIM/DMARC tooling, CalDAV/CardDAV sync, and an MCP API for AI-assistant integration.}{2024 -- Present}
+% ---------- HONORS ----------
+\section{Honors \& Awards}
 
-\cvbookmark{Launchpad — Productivity Application}
-\project{\href{https://www.lpad.ir}{Launchpad}}{A Persian-language Android productivity app with task management, a built-in timer, and a home-screen widget showing task status.}{Present}
+\brief{WorldSkills 2017, Abu Dhabi}{IT Software Solutions for Business}{2017}
+{National gold medalist and international competitor: four days of web, desktop, and mobile
+ programming, data architecture, business analysis, and problem solving.}
 
-\cvbookmark{Agentless Monitor — Infrastructure Monitoring}
-\project{\href{https://github.com/tayyebi/agentless-monitoring}{Agentless Monitor}}{An Elixir/Rust SSH-based server monitoring dashboard tracking CPU, memory, disk, network, and port status across a fleet with zero agent installs.}{2025 -- Present}
+\brief{IranSkills 2016}{IT Software Solutions for Business}{2016}
+{Ranked 1st, Gold Medal.}
 
-\cvbookmark{Laravel Docker Web Hosting — Hosting Control Panel}
-\project{\href{https://github.com/tayyebi/laravel-docker-web-hosting}{Laravel Docker Web Hosting}}{A Laravel 12 and Docker self-hosted hosting control panel that provisions isolated per-site container stacks (web, database, phpMyAdmin, file manager) behind an Nginx/Lua reverse proxy.}{2023 -- Present}
+\brief{Khwarizmi Youth Award 2015}{Computer Science and Engineering}{2015}
+{Ranked 3rd nationally; one of 45 students selected from 25,339 at the country's most creditable
+ scientific festival. Implemented a centralized authentication and authorization system at age 17.}
 
-\cvbookmark{Deepr — Multi-agent Decision Support}
-\project{\href{https://github.com/tayyebi/deepr}{Deepr}}{A .NET/Blazor multi-agent decision-support API that orchestrates AI and human councils through structured methods (Delphi, NGT, ADKAR, Weighted Deliberation) and analytical tools (SWOT, PESTLE) to produce and export ranked decisions.}{2025 -- Present}
+% ---------- CERTIFICATIONS ----------
+\section{Certifications}
+\lineentry{Data Analytics: Foundations — NASBA / LinkedIn Learning}{2023}
+\lineentry{Business Process Modeling — PMI / LinkedIn Learning}{2023}
+\lineentry{Business Analysis Foundations — IIBA / LinkedIn Learning}{2023}
+\lineentry{Certified Instructor — Iran TVTO}{2015}
+\lineentry{Enterprise Web Development with ASP.NET — Iran TVTO}{2013}
 
-\cvbookmark{Streaming — Multi-destination Streaming}
-\project{\href{https://github.com/tayyebi/streaming}{Streaming}}{A Docker, Nginx-RTMP, and stunnel guide and scripts for simulcasting a desktop or camera feed to multiple streaming destinations at once.}{2018 -- Present}
+% ---------- PUBLICATIONS & SPEAKING ----------
+\section{Publications \& Speaking}
 
-\cvbookmark{TehranStocks — Financial Market Data}
-\project{\href{https://github.com/tayyebi/TehranStocks}{TehranStocks}}{A C\#/.NET service that fetches and organizes public market data from the Tehran Stock Exchange (TSETMC).}{2021 -- Present}
+\brief{MBA Information Technology Management Expert}{}{}
+{Listed by \extlink{https://mbatalks.ir}{mbatalks.ir}, an online community of MBA professionals.}
 
-% =========================================================
-% PUBLICATIONS
-% =========================================================
+\brief{Conference Representation \& Speaking}{IranSkills}{}
+{Kazan, Russia — IranSkills representative expert (2018); Alborz, Iran — province representative at
+ the first congress of national skills competitors (2016); Hamedan, Iran — special speaker as top
+ researcher (2015).}
 
-\cvsection{Publications}
-
-\cvbookmark{Department of Information Technology and other magics}
-\publication{\href{https://tayyebi.github.io/devops-book/}{Department of Information Technology and other magics}}{Open-source book (in progress): a professional guide to installing IT infrastructure and organizing teams.}{Book}
-
-\cvbookmark{MBATalks.ir}
-\publication{\href{https://mbatalks.ir}{MBATalks.ir}}{Online community of MBA professionals. Listed as MBA Information Technology Management Expert.}{Website}
-
-\cvbookmark{QuantumEngineering.ir}
-\publication{\href{https://quantumengineering.ir}{QuantumEngineering.ir}}{A practical path from classical software engineering to quantum computing, quantum information, and research.}{Website}
-
-% =========================================================
-% EDUCATION
-% =========================================================
-
-\cvsection{Education}
-
-\cvbookmark{Master of Business Administration — Khaje Nasir Toosi University}
-\compactrole{Master of Business Administration (MBA)}{\href{https://www.kntu.ac.ir}{Khaje Nasir Toosi University of Technology}, Tehran, Iran. Minor in Marketing Management.}{Oct 2021 -- Jul 2023}
-
-\cvbookmark{Bachelor of Science in Computer Engineering — Bu-Ali Sina University}
-\compactrole{Bachelor of Science in Computer Engineering}{\href{https://www.basu.ac.ir}{Bu-Ali Sina University}, Hamedan, Iran. Minor in Information Technology.}{Mar 2016 -- Jul 2020}
-
-\cvbookmark{Diploma in Mathematics and Physics}
-\compactrole{Diploma in Mathematics and Physics}{Madani High School, Hamedan, Iran}{Sep 2013 -- Aug 2018}
-
-% =========================================================
-% HONORS & AWARDS
-% =========================================================
-
-\cvsection{Honors \& Awards}
-
-\cvbookmark{WorldSkills 2017 — National Gold Medal}
-\compactrole{\href{https://www.credly.com/badges/4333ef3c-2cf8-43f3-a102-33ffb50ba6f2/public_url}{WorldSkills 2017}, Abu Dhabi}{Champion, National Gold Medalist (IT -- Software Solutions for Business). Some records list this result as ranked 20th.}{2017}
-\begin{itemize}
-  \item Four days of web, desktop, and mobile programming, data architecture, business analysis, and problem solving against talented youth from many countries.
-\end{itemize}
-
-\cvbookmark{IranSkills 2016 — First Place}
-\compactrole{IranSkills 2016}{Ranked 1st, Gold Medal (IT -- Software Solutions for Business)}{2016}
-
-\cvbookmark{Khwarizmi Youth Award 2015 — National Third Place}
-\compactrole{Khwarizmi Youth Award 2015}{National Ranked 3rd (Computer Science and Engineering)}{2015}
-\begin{itemize}
-  \item Selected as one of 45 students out of 25,339 (top 10\%) at the nation's most creditable scientific festival.
-  \item Implemented a centralized authentication and authorization system at age 17.
-\end{itemize}
-
-% =========================================================
-% ARTS
-% =========================================================
-
-\cvsection{Arts}
-
-\cvbookmark{Music Awards — Ayeen Ensemble}
-\compactrole{Music Awards}{With Ayeen Ensemble}{2017}
-\begin{itemize}
-  \item 2nd place, Fajr Festival, Hamedan
-  \item 1st place, Niayesh Festival, Qazvin
-\end{itemize}
-
-\cvbookmark{Kanun Player — Ayeen Ensemble}
-\compactrole{Kanun Player}{\href{https://www.ayeenensemble.ir/}{Ayeen Ensemble}}{2017 -- 2024}
-
-\cvbookmark{Kanun Player — Alvand Orchestra}
-\compactrole{Kanun Player}{Alvand Orchestra}{2014 -- 2015}
-
-% =========================================================
-% CERTIFICATIONS
-% =========================================================
-
-\cvsection{Certifications}
-
-\cvbookmark{Data Analytics: Foundations}
-\compactrole{\href{https://www.linkedin.com/learning/certificates/10c24841aac6b0c139f4971a8efd6d10356dc105124e31fa10eb32aa14ce3392}{Data Analytics: Foundations}}{NASBA, LinkedIn Learning}{2023}
-
-\cvbookmark{Business Process Modeling}
-\compactrole{\href{https://www.linkedin.com/learning/certificates/3d1e244d9234631a908175486d19855434634d7f61cec316ba4eb269bb041}{Business Process Modeling}}{PMI, LinkedIn Learning}{2023}
-
-\cvbookmark{Business Analysis Foundations}
-\compactrole{\href{https://www.linkedin.com/learning/certificates/51dd265ef63b58255245c8f7438549551c92d30031e81b9ad864ee6994e1f6e6}{Business Analysis Foundations}}{IIBA, LinkedIn Learning}{2023}
-
-\cvbookmark{Certified Instructor}
-\compactrole{Certified Instructor}{TVTO, Contract No. 5243 96/30\_475616/2}{2015}
-
-\cvbookmark{Enterprise Web Development with ASP.NET}
-\compactrole{Enterprise Web Development with ASP.NET}{TVTO, No. 90163030986}{2013}
-
-% =========================================================
-% SPEAKING & CONFERENCES
-% =========================================================
-
-\cvsection{Speaking \& Conferences}
-
-\cvbookmark{Kazan, Russia — IranSkills Representative Expert}
-\compactrole{Kazan, Russia}{IranSkills representative expert}{2018}
-
-\cvbookmark{Alborz, Iran — National Skills Competitors Congress}
-\compactrole{Alborz, Iran}{Province representative at the first congress of national skills competitors, with the minister's assistant}{2016}
-
-\cvbookmark{Hamedan, Iran — Special Speaker}
-\compactrole{Hamedan, Iran}{Special speaker as top researcher in a session with education system chairmen and teachers}{2015}
-
-% =========================================================
-% LANGUAGES
-% =========================================================
-
-\cvsection{Languages}
-
-Persian (Native), English (Full professional proficiency), German (A2)
-
-% =========================================================
-% INTERESTS
-% =========================================================
-
-\cvsection{Interests}
-
-Cycling, night sky observation (Certified Night Sky Observer, Ibn-Sala Astronomy Center), robotics.
-
-% =========================================================
-% END DOCUMENT
-% =========================================================
+% ---------- LANGUAGES & INTERESTS ----------
+\section{Languages \& Interests}
+\skill{Languages}{Persian (native), English (full professional proficiency), German (A2)}
+\skill{Interests}{Cycling; night-sky observation (Certified Night Sky Observer, Ibn-Sala Astronomy
+ Center); robotics; kanun performance with Ayeen Ensemble — 1st place, Niayesh Festival, Qazvin and
+ 2nd place, Fajr Festival, Hamedan (2017); Alvand Orchestra (2014--2015)}
 
 \end{document}
